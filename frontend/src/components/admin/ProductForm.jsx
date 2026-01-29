@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { X, Save, Image as ImageIcon, Plus, Trash2, Loader } from 'lucide-react';
 import { useCategories } from '../../context/CategoryContext';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
@@ -21,16 +21,15 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     ]
   });
 
+  const [uploadingState, setUploadingState] = useState({});
+
   useEffect(() => {
     if (product) {
-        // Adapt existing product data to form structure
-        // If editing, we assume product has new structure or we adapt it
         setFormData({
             name: product.name || '',
             price: product.price || '',
             category_id: product.category_id || (categories.length > 0 ? categories[0].id : ''),
             description: product.description || '',
-            // If product has colors, use them, else default
             colors: product.colors && product.colors.length > 0 ? product.colors.map(c => ({
                 name: c.name || '',
                 hex: c.hex || '#000000',
@@ -63,10 +62,39 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     }
   };
 
-  const handleImageChange = (colorIndex, imageIndex, value) => {
-    const newColors = [...formData.colors];
-    newColors[colorIndex].images[imageIndex] = value;
-    setFormData({ ...formData, colors: newColors });
+  const handleImageUpload = async (colorIndex, imageIndex, file) => {
+    if (!file) return;
+
+    const uploadKey = `${colorIndex}-${imageIndex}`;
+    setUploadingState(prev => ({ ...prev, [uploadKey]: true }));
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('image', file);
+
+    try {
+        const token = localStorage.getItem('fama-token');
+        const response = await fetch('http://localhost:5000/api/products/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formDataUpload
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+        
+        const data = await response.json();
+        
+        const newColors = [...formData.colors];
+        newColors[colorIndex].images[imageIndex] = data.url;
+        setFormData({ ...formData, colors: newColors });
+
+    } catch (error) {
+        console.error("Upload error:", error);
+        alert("Erreur lors de l'upload de l'image");
+    } finally {
+        setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+    }
   };
 
   const addImageSlot = (colorIndex) => {
@@ -215,21 +243,42 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     {color.images.map((img, iIndex) => (
                                         <div key={iIndex} className="relative group">
-                                            <div className="aspect-square bg-white rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
-                                                {img ? (
+                                            <div className="aspect-square bg-white rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center relative">
+                                                {uploadingState[`${cIndex}-${iIndex}`] ? (
+                                                    <Loader className="animate-spin text-primary-500" />
+                                                ) : img ? (
                                                     <img src={img} alt="" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <ImageIcon className="text-slate-300" />
+                                                    <label className="cursor-pointer w-full h-full flex items-center justify-center hover:bg-slate-50 transition-colors">
+                                                        <ImageIcon className="text-slate-300" />
+                                                        <input 
+                                                            type="file" 
+                                                            accept="image/*" 
+                                                            className="hidden" 
+                                                            onChange={(e) => handleImageUpload(cIndex, iIndex, e.target.files[0])}
+                                                        />
+                                                    </label>
                                                 )}
+                                                
+                                                {/* Allow changing image if already set */}
+                                                {img && (
+                                                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                        <label className="cursor-pointer text-white text-xs px-2 py-1 bg-black/50 rounded">
+                                                            Modifier
+                                                            <input 
+                                                                type="file" 
+                                                                accept="image/*" 
+                                                                className="hidden" 
+                                                                onChange={(e) => handleImageUpload(cIndex, iIndex, e.target.files[0])}
+                                                            />
+                                                        </label>
+                                                   </div>
+                                                )}
+
                                             </div>
-                                            <input
-                                                type="url"
-                                                placeholder="https://..."
-                                                value={img}
-                                                onChange={(e) => handleImageChange(cIndex, iIndex, e.target.value)}
-                                                className="mt-1 w-full text-xs p-1 border rounded"
-                                            />
-                                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            
+                                            {/* We rely on hidden input in label for new ones, but for removing slot: */}
+                                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                                  <button
                                                     type="button"
                                                     onClick={() => removeImageSlot(cIndex, iIndex)}
@@ -269,15 +318,15 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           <button
             type="submit"
             form="product-form"
-            className="px-6 py-2.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-lg shadow-primary-500/20 transition-all transform active:scale-95 flex items-center gap-2"
+            disabled={Object.values(uploadingState).some(s => s)} // Disable if any upload in progress
+            className="px-6 py-2.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-lg shadow-primary-500/20 transition-all transform active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={18} />
-            Enregistrer
+            {Object.values(uploadingState).some(s => s) ? 'Upload en cours...' : 'Enregistrer'}
           </button>
         </div>
       </div>
     </div>
   );
 };
-
 export default ProductForm;

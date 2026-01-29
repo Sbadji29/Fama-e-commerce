@@ -36,7 +36,7 @@ const AdminLayout = () => {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100">
-          <span className="text-xl font-display font-bold text-gradient">Fama Admin</span>
+          <span className="text-xl font-display font-bold text-gradient">MissUniverse Admin</span>
           <button 
             onClick={() => setIsSidebarOpen(false)}
             className="md:hidden p-1 text-slate-500 hover:bg-slate-100 rounded"
@@ -91,9 +91,9 @@ const AdminLayout = () => {
           
           <div className="flex items-center gap-4 ml-auto">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold text-sm">
-              AD
+              FSB
             </div>
-            <span className="text-sm font-medium text-slate-700 hidden sm:block">Admin User</span>
+            <span className="text-sm font-medium text-slate-700 hidden sm:block">Fama Séne Ba</span>
           </div>
         </header>
 

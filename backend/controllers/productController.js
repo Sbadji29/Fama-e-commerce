@@ -147,7 +147,7 @@ const uploadImage = (req, res) => {
     if(!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    const url = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/uploads/${req.file.filename}`;
+    const url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     res.json({ url });
 };
 

@@ -12,6 +12,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     phone: ''
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
@@ -22,7 +23,6 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     if (!formData.name.trim()) newErrors.name = 'Le nom est requis';
     if (!formData.city.trim()) newErrors.city = 'La ville est requise';
     
-    // Simple basic validation if validatePhone is not robust yet
     if (!formData.phone.trim()) {
       newErrors.phone = 'Le téléphone est requis';
     } else if (validatePhone && !validatePhone(formData.phone)) {
@@ -33,12 +33,13 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
+      let validationLink = null;
+      let orderCreated = false;
+
       try {
         // Create order in backend
         const response = await fetch('http://localhost:5000/api/orders', {
@@ -61,16 +62,19 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
         if (!response.ok) throw new Error('Failed to create order');
         const data = await response.json();
-        const validationLink = `${window.location.origin}${data.validationLink}`;
+        validationLink = `${window.location.origin}${data.validationLink}`;
+        orderCreated = true;
 
+      } catch (err) {
+        console.error("Backend error, falling back to offline mode:", err);
+        // Fallback: Proceed without validation link
+        // Optional: Alert user
+        // alert("Connexion serveur instable. La commande sera envoyée via WhatsApp uniquement.");
+      } finally {
         const url = generateWhatsAppURL(formData, cartItems, total, validationLink);
         window.open(url, '_blank');
         clearCart();
         onClose();
-      } catch (err) {
-        console.error(err);
-        setErrors(prev => ({ ...prev, api: 'Erreur lors de la création de la commande' }));
-      } finally {
         setIsSubmitting(false);
       }
     }
@@ -85,7 +89,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
         onClick={onClose}

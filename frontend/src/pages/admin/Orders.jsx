@@ -1,25 +1,67 @@
 import React from 'react';
+import { useOrders } from '../../context/OrderContext';
 import { ShoppingBag } from 'lucide-react';
 
 const Orders = () => {
+  const { orders, loading } = useOrders();
+
+  if (loading) return <div>Chargement...</div>;
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
         <h1 className="text-2xl font-display font-bold text-slate-900">Commandes</h1>
-        <p className="text-slate-500">Suivi des commandes (Fonctionnalité à venir)</p>
+        <p className="text-slate-500">Suivi des commandes</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
-        <div className="w-24 h-24 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <ShoppingBag size={48} className="text-primary-300" />
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 text-slate-500 border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4 font-medium">N°</th>
+                <th className="px-6 py-4 font-medium">Date</th>
+                <th className="px-6 py-4 font-medium">Client</th>
+                <th className="px-6 py-4 font-medium">Ville</th>
+                <th className="px-6 py-4 font-medium">Total</th>
+                <th className="px-6 py-4 font-medium">Statut</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+               {orders.length === 0 ? (
+                 <tr>
+                    <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
+                        Aucune commande trouvée.
+                    </td>
+                 </tr>
+               ) : (
+                orders.map((order) => (
+                    <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-900">#{order.id}</td>
+                    <td className="px-6 py-4 text-slate-500">{new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString()}</td>
+                    <td className="px-6 py-4 text-slate-600">
+                        <div className="font-medium text-slate-900">{order.customer_name}</div>
+                        <div className="text-xs">{order.customer_phone}</div>
+                    </td>
+                    <td className="px-6 py-4 text-slate-600">{order.customer_city}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{order.total_amount} CFA</td>
+                    <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        order.status === 'validated' || order.status === 'Livré' 
+                            ? 'bg-green-100 text-green-800' 
+                            : order.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                        {order.status || 'En attente'}
+                        </span>
+                    </td>
+                    </tr>
+                ))
+               )}
+            </tbody>
+          </table>
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">Gestion des commandes</h2>
-        <p className="text-slate-500 max-w-md mx-auto">
-          Cette section sera connectée à WhatsApp ou à une base de données dans une future mise à jour pour suivre le statut de vos commandes.
-        </p>
       </div>
     </div>
   );
 };
-
 export default Orders;

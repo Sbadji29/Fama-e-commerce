@@ -15,7 +15,7 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
           alt={product.name}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+        <div className="absolute inset-0 bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
           <button
             onClick={() => onViewDetails(product)}
             className="p-3 bg-white text-slate-900 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"

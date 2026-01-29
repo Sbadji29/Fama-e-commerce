@@ -1,33 +1,100 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Image as ImageIcon } from 'lucide-react';
+import { X, Save, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
 import { useCategories } from '../../context/CategoryContext';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const { categories } = useCategories();
+  
+  // Initial state structure
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    category: categories[0] || 'Vêtements',
+    category_id: '',
     description: '',
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80',
-    sizes: 'S, M, L' // Comma separated string for input
+    colors: [
+      {
+        name: 'Standard',
+        hex: '#000000',
+        stock_quantity: 0,
+        images: [''] // Minimum one image slot
+      }
+    ]
   });
 
   useEffect(() => {
     if (product) {
-      setFormData({
-        ...product,
-        sizes: product.sizes ? product.sizes.join(', ') : ''
-      });
+        // Adapt existing product data to form structure
+        // If editing, we assume product has new structure or we adapt it
+        setFormData({
+            name: product.name || '',
+            price: product.price || '',
+            category_id: product.category_id || (categories.length > 0 ? categories[0].id : ''),
+            description: product.description || '',
+            // If product has colors, use them, else default
+            colors: product.colors && product.colors.length > 0 ? product.colors.map(c => ({
+                name: c.name || '',
+                hex: c.hex || '#000000',
+                stock_quantity: c.stock || 0,
+                images: c.images && c.images.length > 0 ? c.images : ['']
+            })) : [{ name: 'Standard', hex: '#000000', stock_quantity: 0, images: [''] }]
+        });
+    } else if (categories.length > 0) {
+        setFormData(prev => ({ ...prev, category_id: categories[0].id }));
     }
-  }, [product]);
+  }, [product, categories]);
+
+  const handleColorChange = (index, field, value) => {
+    const newColors = [...formData.colors];
+    newColors[index][field] = value;
+    setFormData({ ...formData, colors: newColors });
+  };
+
+  const addColor = () => {
+    setFormData({
+      ...formData,
+      colors: [...formData.colors, { name: '', hex: '#000000', stock_quantity: 0, images: [''] }]
+    });
+  };
+
+  const removeColor = (index) => {
+    if (formData.colors.length > 1) {
+        const newColors = formData.colors.filter((_, i) => i !== index);
+        setFormData({ ...formData, colors: newColors });
+    }
+  };
+
+  const handleImageChange = (colorIndex, imageIndex, value) => {
+    const newColors = [...formData.colors];
+    newColors[colorIndex].images[imageIndex] = value;
+    setFormData({ ...formData, colors: newColors });
+  };
+
+  const addImageSlot = (colorIndex) => {
+    const newColors = [...formData.colors];
+    newColors[colorIndex].images.push('');
+    setFormData({ ...formData, colors: newColors });
+  };
+
+  const removeImageSlot = (colorIndex, imageIndex) => {
+    const newColors = [...formData.colors];
+    if (newColors[colorIndex].images.length > 1) {
+        newColors[colorIndex].images = newColors[colorIndex].images.filter((_, i) => i !== imageIndex);
+        setFormData({ ...formData, colors: newColors });
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Clean up empty images
+    const cleanedColors = formData.colors.map(c => ({
+        ...c,
+        images: c.images.filter(img => img.trim() !== '')
+    }));
+
     const formattedData = {
       ...formData,
-      price: parseInt(formData.price),
-      sizes: formData.sizes.split(',').map(s => s.trim()).filter(Boolean)
+      price: parseFloat(formData.price),
+      colors: cleanedColors
     };
     onSubmit(formattedData);
   };
@@ -39,7 +106,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         onClick={onCancel}
       />
       
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 animate-scale-in flex flex-col max-h-[90vh]">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl relative z-10 animate-scale-in flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-6 border-b border-slate-100">
           <h2 className="text-xl font-display font-bold text-slate-900">
             {product ? 'Modifier le produit' : 'Nouveau produit'}
@@ -53,107 +120,142 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         </div>
 
         <div className="overflow-y-auto p-6 flex-1">
-          <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
+          <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
+            {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Nom du produit</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="input-field"
-                    placeholder="Ex: Robe Soirée"
-                  />
+                <div className="space-y-4">
+                    <label className="block text-sm font-medium text-slate-700">Informations de base</label>
+                    <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={e => setFormData({...formData, name: e.target.value})}
+                        className="input-field"
+                        placeholder="Nom du produit"
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <input
+                            type="number"
+                            required
+                            min="0"
+                            value={formData.price}
+                            onChange={e => setFormData({...formData, price: e.target.value})}
+                            className="input-field"
+                            placeholder="Prix (CFA)"
+                        />
+                        <select
+                            value={formData.category_id}
+                            onChange={e => setFormData({...formData, category_id: e.target.value})}
+                            className="input-field appearance-none cursor-pointer"
+                        >
+                            <option value="">Sélectionner une catégorie</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <textarea
+                        required
+                        rows="4"
+                        value={formData.description}
+                        onChange={e => setFormData({...formData, description: e.target.value})}
+                        className="input-field"
+                        placeholder="Description..."
+                    />
+                </div>
+            </div>
+
+            {/* Colors & Images */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-slate-700">Couleurs et Images</label>
+                    <button type="button" onClick={addColor} className="text-primary-600 text-sm font-medium flex items-center gap-1 hover:underline">
+                        <Plus size={16} /> Ajouter une couleur
+                    </button>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Prix (CFA)</label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      value={formData.price}
-                      onChange={e => setFormData({...formData, price: e.target.value})}
-                      className="input-field"
-                      placeholder="25000"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Catégorie</label>
-                    <select
-                      value={formData.category}
-                      onChange={e => setFormData({...formData, category: e.target.value})}
-                      className="input-field appearance-none cursor-pointer"
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                <div className="space-y-6">
+                    {formData.colors.map((color, cIndex) => (
+                        <div key={cIndex} className="p-4 border border-slate-200 rounded-xl bg-slate-50 relative">
+                            {formData.colors.length > 1 && (
+                                <button type="button" onClick={() => removeColor(cIndex)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500">
+                                    <Trash2 size={18} />
+                                </button>
+                            )}
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 pr-8">
+                                <input
+                                    type="text"
+                                    placeholder="Nom couleur (ex: Rouge)"
+                                    value={color.name}
+                                    onChange={(e) => handleColorChange(cIndex, 'name', e.target.value)}
+                                    className="input-field"
+                                />
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="color"
+                                        value={color.hex}
+                                        onChange={(e) => handleColorChange(cIndex, 'hex', e.target.value)}
+                                        className="h-10 w-10 rounded cursor-pointer border-0"
+                                    />
+                                    <span className="text-sm text-slate-500">{color.hex}</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    placeholder="Stock"
+                                    min="0"
+                                    value={color.stock_quantity}
+                                    onChange={(e) => handleColorChange(cIndex, 'stock_quantity', parseInt(e.target.value) || 0)}
+                                    className="input-field"
+                                />
+                            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Tailles (séparées par des virgules)</label>
-                  <input
-                    type="text"
-                    value={formData.sizes}
-                    onChange={e => setFormData({...formData, sizes: e.target.value})}
-                    className="input-field"
-                    placeholder="S, M, L, XL"
-                  />
+                            <div className="space-y-3">
+                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Images pour {color.name || 'cette couleur'}</label>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    {color.images.map((img, iIndex) => (
+                                        <div key={iIndex} className="relative group">
+                                            <div className="aspect-square bg-white rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
+                                                {img ? (
+                                                    <img src={img} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <ImageIcon className="text-slate-300" />
+                                                )}
+                                            </div>
+                                            <input
+                                                type="url"
+                                                placeholder="https://..."
+                                                value={img}
+                                                onChange={(e) => handleImageChange(cIndex, iIndex, e.target.value)}
+                                                className="mt-1 w-full text-xs p-1 border rounded"
+                                            />
+                                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                 <button
+                                                    type="button"
+                                                    onClick={() => removeImageSlot(cIndex, iIndex)}
+                                                    className="bg-white text-red-500 rounded-full p-1 shadow-sm border border-slate-100"
+                                                    disabled={color.images.length <= 1}
+                                                >
+                                                    <X size={12} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => addImageSlot(cIndex)}
+                                        className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-lg text-slate-400 hover:border-primary-300 hover:text-primary-500 transition-colors"
+                                    >
+                                        <Plus size={24} />
+                                        <span className="text-xs mt-1">Ajouter</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                  <textarea
-                    required
-                    rows="4"
-                    value={formData.description}
-                    onChange={e => setFormData({...formData, description: e.target.value})}
-                    className="input-field min-h-[100px]"
-                    placeholder="Description détaillée du produit..."
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="block text-sm font-medium text-slate-700">Image du produit</label>
-                <div className="relative aspect-square rounded-xl overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 group">
-                  {formData.image ? (
-                    <>
-                      <img 
-                        src={formData.image} 
-                        alt="Aperçu" 
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium">
-                        Changer l'image
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                      <ImageIcon size={32} />
-                      <span className="mt-2 text-sm">Aperçu de l'image</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">URL de l'image</label>
-                  <input
-                    type="url"
-                    required
-                    value={formData.image}
-                    onChange={e => setFormData({...formData, image: e.target.value})}
-                    className="input-field text-sm"
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  <p className="text-xs text-slate-400 mt-1">Utilisez une URL Unsplash pour le test</p>
-                </div>
-              </div>
             </div>
+
           </form>
         </div>
 

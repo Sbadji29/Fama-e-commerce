@@ -11,7 +11,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (login(password)) {
+    if (login('admin123', password)) {
       navigate('/admin');
     } else {
       setError('Mot de passe incorrect');

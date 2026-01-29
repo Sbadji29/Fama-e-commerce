@@ -81,7 +81,7 @@ const Products = () => {
           >
             <option value="Tous">Toutes les catégories</option>
             {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
         </div>

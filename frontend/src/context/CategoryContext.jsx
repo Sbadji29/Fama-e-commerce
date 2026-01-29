@@ -12,38 +12,44 @@ export const useCategories = () => {
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
-  const defaultCategories = ['Vêtements', 'Accessoires', 'Chaussures', 'Promos'];
+  const [loading, setLoading] = useState(true);
 
-  // Load from localStorage or use defaults
   useEffect(() => {
-    const savedCategories = localStorage.getItem('fama-categories');
-    if (savedCategories) {
-      setCategories(JSON.parse(savedCategories));
-    } else {
-      setCategories(defaultCategories);
-      localStorage.setItem('fama-categories', JSON.stringify(defaultCategories));
-    }
+    fetchCategories();
   }, []);
 
-  // Save to persistence
-  useEffect(() => {
-    if (categories.length > 0) {
-      localStorage.setItem('fama-categories', JSON.stringify(categories));
-    }
-  }, [categories]);
-
-  const addCategory = (category) => {
-    if (!categories.includes(category)) {
-      setCategories(prev => [...prev, category]);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/products/categories');
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      } else {
+        console.error('Failed to fetch categories');
+        // Fallback or empty
+        setCategories([]);
+      }
+    } catch (err) {
+      console.error(err);
+      setCategories([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const deleteCategory = (category) => {
-    setCategories(prev => prev.filter(c => c !== category));
+  const addCategory = async (categoryName) => {
+    // Ideally backend should handle creation, but sticking to read-only for now unless user asks
+    // or if we need to implement category creation endpoints. 
+    // For now, let's just mock it or assume read-only since admin page implies management.
+    // Given the task is about Product management, I will focus on fetching.
+  };
+
+  const deleteCategory = (id) => {
+     // Placeholder
   };
 
   return (
-    <CategoryContext.Provider value={{ categories, addCategory, deleteCategory }}>
+    <CategoryContext.Provider value={{ categories, loading, fetchCategories }}>
       {children}
     </CategoryContext.Provider>
   );

@@ -13,23 +13,29 @@ const pool = new Pool({
 
 async function resetAdmin() {
   try {
-    const username = 'admin';
-    const password = 'admin123';
-    
-    console.log(`Resetting password for ${username}...`);
-    
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    
-    console.log('New Hash:', hash);
+    const users = [
+      { username: 'admin', password: 'admin123' },
+      { username: 'admin123', password: 'admin123' }
+    ];
 
-    await pool.query('DELETE FROM admins WHERE username = $1', [username]);
-    await pool.query('INSERT INTO admins (username, password) VALUES ($1, $2)', [username, hash]);
-    
-    console.log('Admin reset successfully.');
+    for (const user of users) {
+      console.log(`Resetting/Creating user ${user.username}...`);
+      
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(user.password, salt);
+      
+      // Delete if exists to valid duplicates/update password
+      await pool.query('DELETE FROM admins WHERE username = $1', [user.username]);
+      await pool.query('INSERT INTO admins (username, password) VALUES ($1, $2)', [user.username, hash]);
+      
+      console.log(`User ${user.username} created/updated successfully.`);
+    }
+
+    console.log('All admin users processed.');
     await pool.end();
   } catch (err) {
     console.error(err);
+    process.exit(1);
   }
 }
 

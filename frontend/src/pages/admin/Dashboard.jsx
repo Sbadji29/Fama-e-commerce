@@ -1,23 +1,27 @@
 import React from 'react';
 import { DollarSign, Package, ShoppingBag, TrendingUp } from 'lucide-react';
 import StatsCard from '../../components/admin/StatsCard';
-import { products } from '../../data/products';
+import { useProducts } from '../../context/ProductContext';
+import { useOrders } from '../../context/OrderContext';
 
 const Dashboard = () => {
-  // Mock data calculations
+  const { products } = useProducts();
+  const { orders } = useOrders();
+
+  // Calculations
   const totalProducts = products.length;
-  // Simulating valid currency format for total revenue
+  
+  const totalRevenueValue = orders
+    .filter(o => o.status !== 'cancelled')
+    .reduce((acc, order) => acc + parseFloat(order.total_amount || 0), 0);
+
   const totalRevenue = new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: 'XOF',
     minimumFractionDigits: 0
-  }).format(1250000).replace('XOF', 'CFA');
+  }).format(totalRevenueValue).replace('XOF', 'CFA');
 
-  const recentOrders = [
-    { id: '#CMD001', customer: 'Aminata Diallo', date: '26 Jan 2026', total: '25 000 CFA', status: 'En attente' },
-    { id: '#CMD002', customer: 'Moussa Diop', date: '25 Jan 2026', total: '15 000 CFA', status: 'Livré' },
-    { id: '#CMD003', customer: 'Fatou Sow', date: '25 Jan 2026', total: '45 000 CFA', status: 'Livré' },
-  ];
+  const recentOrders = orders.slice(0, 5); // display top 5
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -32,14 +36,14 @@ const Dashboard = () => {
           title="Chiffre d'affaires" 
           value={totalRevenue} 
           icon={DollarSign} 
-          trend={12} 
+          trend={0} 
           color="green"
         />
         <StatsCard 
           title="Commandes" 
-          value="156" 
+          value={orders.length} 
           icon={ShoppingBag} 
-          trend={8} 
+          trend={0} 
           color="primary"
         />
         <StatsCard 
@@ -51,9 +55,9 @@ const Dashboard = () => {
         />
         <StatsCard 
           title="Visites" 
-          value="1,245" 
+          value="-" 
           icon={TrendingUp} 
-          trend={24} 
+          trend={0} 
           color="secondary"
         />
       </div>
@@ -76,23 +80,29 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-900">{order.id}</td>
-                  <td className="px-6 py-4 text-slate-600">{order.customer}</td>
-                  <td className="px-6 py-4 text-slate-500">{order.date}</td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{order.total}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      order.status === 'Livré' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {recentOrders.length === 0 ? (
+                 <tr>
+                    <td colSpan="5" className="px-6 py-4 text-center text-slate-500">Aucune commande pour le moment.</td>
+                 </tr>
+              ) : (
+                recentOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-900">#{order.id}</td>
+                    <td className="px-6 py-4 text-slate-600">{order.customer_name}</td>
+                    <td className="px-6 py-4 text-slate-500">{new Date(order.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{order.total_amount} CFA</td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        order.status === 'validated' || order.status === 'Livré' 
+                          ? 'bg-green-100 text-green-800' 
+                          : order.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {order.status || 'En attente'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

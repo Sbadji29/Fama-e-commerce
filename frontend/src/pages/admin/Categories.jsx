@@ -59,20 +59,22 @@ const Categories = () => {
           </div>
           <ul className="divide-y divide-slate-100">
             {categories.map((category) => (
-              <li key={category} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group">
+              <li key={category.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary-50 rounded-lg text-primary-600">
                     <Tag size={18} />
                   </div>
-                  <span className="font-medium text-slate-700">{category}</span>
+                  <span className="font-medium text-slate-700">{category.name}</span>
                 </div>
+                {/* 
                 <button
-                  onClick={() => handleDelete(category)}
+                  onClick={() => handleDelete(category.id)}
                   className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                   title="Supprimer"
                 >
                   <Trash2 size={18} />
-                </button>
+                </button> 
+                */}
               </li>
             ))}
           </ul>

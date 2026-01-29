@@ -13,6 +13,8 @@ import { CartProvider } from './context/CartContext';
 import { ProductProvider } from './context/ProductContext';
 import { CategoryProvider } from './context/CategoryContext';
 import { AuthProvider } from './context/AuthContext';
+import { OrderProvider } from './context/OrderContext';
+
 
 function App() {
   return (
@@ -20,24 +22,26 @@ function App() {
       <ProductProvider>
         <CategoryProvider>
           <CartProvider>
-            <BrowserRouter>
-              <Routes>
-                {/* Customer Routes */}
-                <Route path="/" element={<StoreFront />} />
-                <Route path="/login" element={<Login />} />
-                
-                {/* Admin Routes (Protected) */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="products" element={<Products />} />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="orders" element={<Orders />} />
-                    <Route path="validate-order/:token" element={<ValidateOrder />} />
+            <OrderProvider>
+              <BrowserRouter>
+                <Routes>
+                  {/* Customer Routes */}
+                  <Route path="/" element={<StoreFront />} />
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Admin Routes (Protected) */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<Dashboard />} />
+                      <Route path="products" element={<Products />} />
+                      <Route path="categories" element={<Categories />} />
+                      <Route path="orders" element={<Orders />} />
+                      <Route path="validate-order/:token" element={<ValidateOrder />} />
+                    </Route>
                   </Route>
-                </Route>
-              </Routes>
-            </BrowserRouter>
+                </Routes>
+              </BrowserRouter>
+            </OrderProvider>
           </CartProvider>
         </CategoryProvider>
       </ProductProvider>

@@ -3,6 +3,7 @@ import { X, MessageCircle, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice, validatePhone } from '../utils/formatters';
 import { generateWhatsAppURL } from '../utils/whatsapp';
+import { API_URL } from '../utils/api';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
   const { cartItems, getTotal, clearCart } = useCart();
@@ -42,7 +43,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
       try {
         // Create order in backend
-        const response = await fetch('http://localhost:5000/api/orders', {
+        const response = await fetch(`${API_URL}/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

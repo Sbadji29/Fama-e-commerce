@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_URL } from '../../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { CheckCircle, XCircle, Loader, ArrowRight } from 'lucide-react';
@@ -25,7 +26,7 @@ const ValidateOrder = () => {
         
         try {
             const tokenAuth = localStorage.getItem('fama-token');
-            const res = await fetch(`http://localhost:5000/api/orders/validate/${token}`, {
+            const res = await fetch(`${API_URL}/orders/validate/${token}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tokenAuth}`

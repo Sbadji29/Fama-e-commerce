@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../utils/api';
 import { X, Save, Image as ImageIcon, Plus, Trash2, Loader } from 'lucide-react';
 import { useCategories } from '../../context/CategoryContext';
 
@@ -73,7 +74,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
     try {
         const token = localStorage.getItem('fama-token');
-        const response = await fetch('http://localhost:5000/api/products/upload', {
+        const response = await fetch(`${API_URL}/products/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`

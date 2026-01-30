@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('fama-token');
     if (token) {
         // Optional: Verify token with backend
-        fetch('http://localhost:5000/api/auth/verify', {
+        fetch(`${API_URL}/auth/verify`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        const res = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })

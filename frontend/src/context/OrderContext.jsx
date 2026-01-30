@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../utils/api';
 
 const OrderContext = createContext();
 
@@ -20,7 +21,7 @@ export const OrderProvider = ({ children }) => {
         const token = localStorage.getItem('fama-token');
         if (!token) return; // Wait for auth or maybe just return empty if not public
         
-        const response = await fetch('http://localhost:5000/api/orders', {
+        const response = await fetch(`${API_URL}/orders`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

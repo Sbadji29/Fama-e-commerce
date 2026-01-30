@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../utils/api';
 
 
 const ProductContext = createContext();
@@ -18,7 +19,7 @@ export const ProductProvider = ({ children }) => {
 
   const fetchProducts = async () => {
     try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(`${API_URL}/products`);
         if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();
         setProducts(data);
@@ -40,7 +41,7 @@ export const ProductProvider = ({ children }) => {
   const addProduct = async (newProduct) => {
     try {
         const token = localStorage.getItem('fama-token');
-        const response = await fetch('http://localhost:5000/api/products', {
+        const response = await fetch(`${API_URL}/products`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ export const ProductProvider = ({ children }) => {
   const deleteProduct = async (id) => {
     try {
         const token = localStorage.getItem('fama-token');
-        await fetch(`http://localhost:5000/api/products/${id}`, {
+        await fetch(`${API_URL}/products/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`

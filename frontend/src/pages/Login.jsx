@@ -61,11 +61,6 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-sm text-slate-400">
-            Mot de passe démo: <span className="font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">admin123</span>
-          </p>
-        </div>
       </div>
     </div>
   );

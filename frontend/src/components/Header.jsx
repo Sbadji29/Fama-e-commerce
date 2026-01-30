@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -19,18 +20,18 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
-          <a href="#" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+          <Link to="/" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
             Accueil
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
-          </a>
-          <a href="#" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+          </Link>
+          <Link to="/collection" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
             Collections
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
-          </a>
-          <a href="#" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+          </Link>
+          <Link to="/about" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
             À propos
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
-          </a>
+          </Link>
         </nav>
 
         {/* Actions */}
@@ -60,9 +61,9 @@ const Header = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-100 p-4 flex flex-col gap-4 shadow-lg animate-fade-in z-30">
-          <a href="#" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg">Accueil</a>
-          <a href="#" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg">Collections</a>
-          <a href="#" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg">À propos</a>
+          <Link to="/" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Accueil</Link>
+          <Link to="/collection" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Collections</Link>
+          <Link to="/about" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>À propos</Link>
         </div>
       )}
     </header>

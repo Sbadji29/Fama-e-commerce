@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import StoreFront from './pages/StoreFront';
 import Login from './pages/Login';
+import About from './pages/About';
+import Collection from './pages/Collection';
 import AdminLayout from './components/admin/AdminLayout';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import Dashboard from './pages/admin/Dashboard';
@@ -27,6 +29,8 @@ function App() {
                 <Routes>
                   {/* Customer Routes */}
                   <Route path="/" element={<StoreFront />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/collection" element={<Collection />} />
                   <Route path="/login" element={<Login />} />
                   
                   {/* Admin Routes (Protected) */}

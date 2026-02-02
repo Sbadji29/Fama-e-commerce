@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ShoppingBag, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { formatPrice } from '../utils/formatters';
 
 const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [viewingVideo, setViewingVideo] = useState(false);
 
   // Reset indices when product changes
   useEffect(() => {
@@ -12,14 +13,21 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
       const firstAvailable = product.colors?.findIndex(c => c.available);
       setSelectedColorIndex(firstAvailable !== -1 ? firstAvailable : 0);
       setCurrentImageIndex(0);
+      setViewingVideo(false);
     }
   }, [product, isOpen]);
+
+  // Reset video when color changes
+  useEffect(() => {
+    setViewingVideo(false);
+  }, [selectedColorIndex]);
 
   if (!isOpen || !product) return null;
 
   const colors = product.colors || [];
   const selectedColor = colors[selectedColorIndex];
   const images = selectedColor?.images || [product.image];
+  const video = selectedColor?.video;
   
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
@@ -45,40 +53,74 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
 
         {/* Image Section */}
         <div className="relative w-full md:w-1/2 h-80 md:h-auto bg-slate-100 overflow-hidden group">
-          <img
-            src={images[currentImageIndex]}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700"
-            key={images[currentImageIndex]} // Force re-render for animation if needed
-          />
-          
-          {images.length > 1 && (
+          {viewingVideo && video ? (
+             <div className="w-full h-full bg-black flex items-center justify-center relative">
+                <video 
+                    src={video} 
+                    controls 
+                    autoPlay 
+                    className="w-full h-full object-contain" 
+                />
+                <button 
+                  onClick={() => setViewingVideo(false)}
+                  className="absolute top-4 left-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors z-30"
+                >
+                  <ChevronLeft size={24} /> <span className="sr-only">Retour</span>
+                </button>
+             </div>
+          ) : (
             <>
-              <button 
-                onClick={handlePrevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-lg"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button 
-                onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-lg"
-              >
-                <ChevronRight size={24} />
-              </button>
+              <img
+                src={images[currentImageIndex]}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-700"
+                key={images[currentImageIndex]} // Force re-render for animation if needed
+              />
               
-              {/* Pagination Dots */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentImageIndex(idx)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === currentImageIndex ? 'w-6 bg-primary-500' : 'bg-white/60 hover:bg-white'
-                    }`}
-                  />
-                ))}
-              </div>
+              {/* Play Button Overlay */}
+              {video && (
+                <button
+                    onClick={() => setViewingVideo(true)}
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors group/video z-10"
+                >
+                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 shadow-xl group-hover/video:scale-110 transition-transform">
+                        <Play fill="white" className="text-white ml-1" size={32} />
+                    </div>
+                </button>
+              )}
+
+              {images.length > 1 && (
+                <>
+                  <button 
+                    onClick={handlePrevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-lg z-20"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button 
+                    onClick={handleNextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-lg z-20"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                  
+                  {/* Pagination Dots */}
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                    {images.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentImageIndex(idx);
+                        }}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          idx === currentImageIndex ? 'w-6 bg-primary-500' : 'bg-white/60 hover:bg-white'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

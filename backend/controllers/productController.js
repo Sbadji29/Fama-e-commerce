@@ -30,6 +30,7 @@ const getProducts = async (req, res) => {
             'hex', pc.hex_code,
             'available', pc.available,
             'stock', pc.stock_quantity,
+            'video', pc.video_url,
             'images', (
               SELECT json_agg(pp.image_url ORDER BY pp.display_order)
               FROM product_photos pp
@@ -109,11 +110,11 @@ const createProduct = async (req, res) => {
         if (colors && Array.isArray(colors)) {
             for (const color of colors) {
                 const insertColorText = `
-                    INSERT INTO product_colors (product_id, color_name, hex_code, stock_quantity)
-                    VALUES ($1, $2, $3, $4)
+                    INSERT INTO product_colors (product_id, color_name, hex_code, stock_quantity, video_url)
+                    VALUES ($1, $2, $3, $4, $5)
                     RETURNING id
                 `;
-                const { rows: colorRows } = await client.query(insertColorText, [productId, color.name, color.hex, color.stock_quantity]);
+                const { rows: colorRows } = await client.query(insertColorText, [productId, color.name, color.hex, color.stock_quantity, color.video || null]);
                 const colorId = colorRows[0].id;
 
                 if (color.images && Array.isArray(color.images)) {

@@ -17,6 +17,8 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         name: 'Standard',
         hex: '#000000',
         stock_quantity: 0,
+
+        video: '',
         images: [''] // Minimum one image slot
       }
     ]
@@ -35,8 +37,10 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                 name: c.name || '',
                 hex: c.hex || '#000000',
                 stock_quantity: c.stock || 0,
+
+                video: c.video || '',
                 images: c.images && c.images.length > 0 ? c.images : ['']
-            })) : [{ name: 'Standard', hex: '#000000', stock_quantity: 0, images: [''] }]
+            })) : [{ name: 'Standard', hex: '#000000', stock_quantity: 0, video: '', images: [''] }]
         });
     } else if (categories.length > 0) {
         setFormData(prev => ({ ...prev, category_id: categories[0].id }));
@@ -52,7 +56,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
   const addColor = () => {
     setFormData({
       ...formData,
-      colors: [...formData.colors, { name: '', hex: '#000000', stock_quantity: 0, images: [''] }]
+      colors: [...formData.colors, { name: '', hex: '#000000', stock_quantity: 0, video: '', images: [''] }]
     });
   };
 
@@ -93,6 +97,41 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     } catch (error) {
         console.error("Upload error:", error);
         alert("Erreur lors de l'upload de l'image");
+    } finally {
+        setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+    }
+  };
+
+  const handleVideoUpload = async (colorIndex, file) => {
+    if (!file) return;
+
+    const uploadKey = `video-${colorIndex}`;
+    setUploadingState(prev => ({ ...prev, [uploadKey]: true }));
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('image', file); // Backend expects 'image' key currently
+
+    try {
+        const token = localStorage.getItem('fama-token');
+        const response = await fetch(`${API_URL}/products/upload`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formDataUpload
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+        
+        const data = await response.json();
+        
+        const newColors = [...formData.colors];
+        newColors[colorIndex].video = data.url;
+        setFormData({ ...formData, colors: newColors });
+
+    } catch (error) {
+        console.error("Upload error:", error);
+        alert("Erreur lors de l'upload de la vidéo");
     } finally {
         setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
     }
@@ -301,6 +340,45 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                                     </button>
                                 </div>
                             </div>
+
+                            {/* Video Section */}
+                            <div className="space-y-3 pt-2 border-t border-slate-100">
+                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Vidéo (Optionnel)</label>
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-colors text-sm font-medium">
+                                        {uploadingState[`video-${cIndex}`] ? <Loader size={16} className="animate-spin" /> : <Plus size={16} />}
+                                        {color.video ? 'Changer la vidéo' : 'Ajouter une vidéo'}
+                                        <input 
+                                            type="file" 
+                                            accept="video/*" 
+                                            className="hidden" 
+                                            onChange={(e) => handleVideoUpload(cIndex, e.target.files[0])}
+                                        />
+                                    </label>
+                                    {color.video && (
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs text-green-600 font-medium truncate max-w-[200px]">Vidéo ajoutée</span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => {
+                                                    const newColors = [...formData.colors];
+                                                    newColors[cIndex].video = '';
+                                                    setFormData({...formData, colors: newColors});
+                                                }}
+                                                className="text-red-500 hover:bg-red-50 p-1.5 rounded"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                {color.video && (
+                                    <div className="mt-2 w-full max-w-xs aspect-video bg-black rounded-lg overflow-hidden relative">
+                                        <video src={color.video} controls className="w-full h-full" />
+                                    </div>
+                                )}
+                            </div>
+
                         </div>
                     ))}
                 </div>

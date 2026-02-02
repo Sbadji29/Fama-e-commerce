@@ -1,11 +1,13 @@
 import React from 'react';
-import { ShoppingBag, Eye } from 'lucide-react';
+import { ShoppingBag, Eye, Play } from 'lucide-react';
 import { formatPrice } from '../utils/formatters';
 
 const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
   const colors = product.colors || [];
   const firstAvailableColor = colors.find(c => c.available) || colors[0];
+
   const displayImage = firstAvailableColor?.images?.[0] || product.image;
+  const hasVideo = colors.some(c => c.video);
 
   return (
     <div className="glass-card rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-500">
@@ -34,6 +36,11 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800">
           {product.category}
         </div>
+        {hasVideo && (
+           <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm p-1.5 rounded-full text-white shadow-sm" title="Vidéo disponible">
+              <Play size={12} fill="white" />
+           </div>
+        )}
       </div>
       
       <div className="p-5">

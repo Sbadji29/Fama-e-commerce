@@ -139,6 +139,76 @@ const validateOrder = async (req, res) => {
     } finally {
         client.release();
     }
+
+};
+
+// @desc    Update order status manually
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; // 'validated', 'cancelled', 'pending'
+    const client = await db.pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // Check Order
+        const checkOrderQuery = `SELECT * FROM orders WHERE id = $1`;
+        const { rows: orderRows } = await client.query(checkOrderQuery, [id]);
+
+        if (orderRows.length === 0) {
+             await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        const order = orderRows[0];
+        const oldStatus = order.status;
+
+        if (oldStatus === status) {
+             await client.query('ROLLBACK');
+             return res.json({ message: 'Status unchanged' });
+        }
+
+        // Logic for Stock
+        const itemsQuery = `SELECT * FROM order_items WHERE order_id = $1`;
+        const { rows: items } = await client.query(itemsQuery, [id]);
+
+        // 1. If moving TO validated (from pending/cancelled) -> Deduct Stock
+        if (status === 'validated' && oldStatus !== 'validated') {
+             for (const item of items) {
+                 await client.query(`
+                    UPDATE product_colors 
+                    SET stock_quantity = stock_quantity - $1 
+                    WHERE id = $2
+                 `, [item.quantity, item.product_color_id]);
+             }
+        }
+
+        // 2. If moving FROM validated (to pending/cancelled) -> Restore Stock
+        if (oldStatus === 'validated' && status !== 'validated') {
+            for (const item of items) {
+                 await client.query(`
+                    UPDATE product_colors 
+                    SET stock_quantity = stock_quantity + $1 
+                    WHERE id = $2
+                 `, [item.quantity, item.product_color_id]);
+             }
+        }
+        
+        // Update Status
+        await client.query(`UPDATE orders SET status = $1 WHERE id = $2`, [status, id]);
+
+        await client.query('COMMIT');
+        res.json({ message: `Order status updated to ${status}` });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    } finally {
+        client.release();
+    }
 };
 
 // @desc    Get all orders
@@ -154,4 +224,4 @@ const getOrders = async (req, res) => {
     }
 };
 
-module.exports = { createOrder, validateOrder, getOrders };
+module.exports = { createOrder, validateOrder, getOrders, updateOrderStatus };

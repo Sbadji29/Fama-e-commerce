@@ -3,7 +3,7 @@ import { useOrders } from '../../context/OrderContext';
 import { ShoppingBag } from 'lucide-react';
 
 const Orders = () => {
-  const { orders, loading } = useOrders();
+  const { orders, loading, updateOrderStatus } = useOrders();
 
   if (loading) return <div>Chargement...</div>;
 
@@ -46,13 +46,25 @@ const Orders = () => {
                     <td className="px-6 py-4 text-slate-600">{order.customer_city}</td>
                     <td className="px-6 py-4 font-medium text-slate-900">{order.total_amount} CFA</td>
                     <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        order.status === 'validated' || order.status === 'Livré' 
-                            ? 'bg-green-100 text-green-800' 
-                            : order.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                        {order.status || 'En attente'}
-                        </span>
+                        <select
+                            value={order.status || 'pending'}
+                            onChange={(e) => {
+                                if (window.confirm(`Changer le statut en "${e.target.value}" ?`)) {
+                                    updateOrderStatus(order.id, e.target.value);
+                                }
+                            }}
+                            className={`px-2.5 py-1 rounded-full text-xs font-medium border-0 cursor-pointer focus:ring-2 focus:ring-primary-500 ${
+                                (order.status === 'validated' || order.status === 'Livré')
+                                    ? 'bg-green-100 text-green-800'
+                                    : order.status === 'cancelled' 
+                                        ? 'bg-red-100 text-red-800' 
+                                        : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                        >
+                            <option value="pending">En attente</option>
+                            <option value="validated">Validé</option>
+                            <option value="cancelled">Annulé</option>
+                        </select>
                     </td>
                     </tr>
                 ))

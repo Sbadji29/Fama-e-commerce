@@ -16,6 +16,29 @@ export const OrderProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const updateOrderStatus = async (id, status) => {
+    try {
+        const token = localStorage.getItem('fama-token');
+        const response = await fetch(`${API_URL}/orders/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
+        });
+        
+        if (!response.ok) throw new Error('Failed to update status');
+        
+        // Update local state
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+        return true;
+    } catch (err) {
+        console.error("Status Update Error", err);
+        throw err;
+    }
+  };
+
   const fetchOrders = async () => {
     try {
         const token = localStorage.getItem('fama-token');
@@ -43,7 +66,7 @@ export const OrderProvider = ({ children }) => {
   }, []);
 
   return (
-    <OrderContext.Provider value={{ orders, loading, error, refreshOrders: fetchOrders }}>
+    <OrderContext.Provider value={{ orders, loading, error, refreshOrders: fetchOrders, updateOrderStatus }}>
       {children}
     </OrderContext.Provider>
   );

@@ -73,7 +73,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         // alert("Connexion serveur instable. La commande sera envoyée via WhatsApp uniquement.");
       } finally {
         const url = generateWhatsAppURL(formData, cartItems, total, validationLink);
-        window.open(url, '_blank');
+        window.location.href = url;
         clearCart();
         onClose();
         setIsSubmitting(false);

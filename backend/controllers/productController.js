@@ -192,8 +192,13 @@ const updateProduct = async (req, res) => {
 
 const createCategory = async (req, res) => {
     const { name } = req.body;
+    const slug = name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-');
+    
     try {
-        const { rows } = await db.query('INSERT INTO categories (name) VALUES ($1) RETURNING *', [name]);
+        const { rows } = await db.query(
+            'INSERT INTO categories (name, slug) VALUES ($1, $2) RETURNING *', 
+            [name, slug]
+        );
         res.status(201).json(rows[0]);
     } catch (error) {
         console.error(error);

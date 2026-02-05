@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS product_colors (
   color_name VARCHAR(50) NOT NULL,
   hex_code VARCHAR(7) NOT NULL,
   stock_quantity INTEGER DEFAULT 0,
-  available BOOLEAN DEFAULT TRUE
+  available BOOLEAN DEFAULT TRUE,
+  video_url TEXT
 );
 
 CREATE TABLE IF NOT EXISTS product_photos (

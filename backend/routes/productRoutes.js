@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getProducts, getCategories, createProduct, uploadImage, deleteProduct, updateProduct } = require('../controllers/productController');
+const { getProducts, getCategories, createProduct, uploadImage, deleteProduct, updateProduct, createCategory, deleteCategory } = require('../controllers/productController');
 const { protect } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
@@ -11,6 +11,10 @@ router.post('/', protect, createProduct); // /api/products/ (for admin technical
 
 // dedicated upload route
 router.post('/upload', protect, upload.single('image'), uploadImage);
+
+// category routes
+router.post('/categories', protect, createCategory);
+router.delete('/categories/:id', protect, deleteCategory);
 
 router.route('/:id')
     .delete(protect, deleteProduct)

@@ -190,4 +190,26 @@ const updateProduct = async (req, res) => {
     }
 };
 
-module.exports = { getProducts, getCategories, createProduct, uploadImage, deleteProduct, updateProduct };
+const createCategory = async (req, res) => {
+    const { name } = req.body;
+    try {
+        const { rows } = await db.query('INSERT INTO categories (name) VALUES ($1) RETURNING *', [name]);
+        res.status(201).json(rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+const deleteCategory = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM categories WHERE id = $1', [id]);
+        res.json({ message: 'Category removed' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+module.exports = { getProducts, getCategories, createProduct, uploadImage, deleteProduct, updateProduct, createCategory, deleteCategory };

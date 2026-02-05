@@ -39,18 +39,50 @@ export const CategoryProvider = ({ children }) => {
   };
 
   const addCategory = async (categoryName) => {
-    // Ideally backend should handle creation, but sticking to read-only for now unless user asks
-    // or if we need to implement category creation endpoints. 
-    // For now, let's just mock it or assume read-only since admin page implies management.
-    // Given the task is about Product management, I will focus on fetching.
+    try {
+        const token = localStorage.getItem('fama-token');
+        const response = await fetch(`${API_URL}/products/categories`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ name: categoryName })
+        });
+        
+        if (!response.ok) throw new Error('Failed to add category');
+        
+        const data = await response.json();
+        setCategories(prev => [...prev, data]);
+        return true;
+    } catch (err) {
+        console.error("Add Category Error", err);
+        return false;
+    }
   };
 
-  const deleteCategory = (id) => {
-     // Placeholder
+  const deleteCategory = async (id) => {
+    try {
+        const token = localStorage.getItem('fama-token');
+        const response = await fetch(`${API_URL}/products/categories/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Failed to delete category');
+        
+        setCategories(prev => prev.filter(cat => cat.id !== id));
+        return true;
+    } catch (err) {
+        console.error("Delete Category Error", err);
+        return false;
+    }
   };
 
   return (
-    <CategoryContext.Provider value={{ categories, loading, fetchCategories }}>
+    <CategoryContext.Provider value={{ categories, loading, fetchCategories, addCategory, deleteCategory }}>
       {children}
     </CategoryContext.Provider>
   );

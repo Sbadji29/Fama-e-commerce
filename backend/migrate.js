@@ -27,6 +27,26 @@ async function migrate() {
       console.log('video_url column already exists.');
     }
 
+    // Check Categories slug
+    console.log('Checking categories table for slug...');
+    const checkSlugQuery = `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name='categories' AND column_name='slug';
+    `;
+    const slugRows = await pool.query(checkSlugQuery);
+    if (slugRows.rows.length === 0) {
+      console.log('Adding slug column to categories table...');
+      await pool.query('ALTER TABLE categories ADD COLUMN slug VARCHAR(100);');
+      // Add unique constraint if possible, but let's keep it simple first
+      await pool.query('UPDATE categories SET slug = LOWER(REPLACE(name, \' \', \'-\')) WHERE slug IS NULL;');
+      await pool.query('ALTER TABLE categories ALTER COLUMN slug SET NOT NULL;');
+      await pool.query('ALTER TABLE categories ADD CONSTRAINT categories_slug_key UNIQUE (slug);');
+      console.log('Slug column added and populated.');
+    } else {
+      console.log('slug column already exists.');
+    }
+
     console.log('Migration completed successfully.');
     await pool.end();
   } catch (err) {

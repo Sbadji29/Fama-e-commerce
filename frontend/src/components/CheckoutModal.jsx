@@ -10,7 +10,8 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     city: '',
-    phone: ''
+    phone: '',
+    address: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,11 +35,16 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const SENEGAL_CITIES = [
+    "Dakar", "Pikine", "Guédiawaye", "Rufisque", "Thiès", "Mbour", 
+    "Saly", "Saint-Louis", "Kaolack", "Ziguinchor", "Diourbel", 
+    "Louga", "Richard-Toll", "Tambacounda", "Touba", "Kolda", "Autre"
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
-      let validationLink = null;
       let orderCreated = false;
 
       try {
@@ -50,6 +56,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                 customer_name: formData.name,
                 customer_phone: formData.phone,
                 customer_city: formData.city,
+                customer_address: formData.address, // Transmit precise address
                 items: cartItems.map(item => ({
                     product_color_id: item.color?.id, 
                     quantity: item.quantity,
@@ -62,15 +69,10 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         });
 
         if (!response.ok) throw new Error('Failed to create order');
-        const data = await response.json();
-        validationLink = `${window.location.origin}${data.validationLink}`;
         orderCreated = true;
 
       } catch (err) {
         console.error("Backend error, falling back to offline mode:", err);
-        // Fallback: Proceed without validation link
-        // Optional: Alert user
-        // alert("Connexion serveur instable. La commande sera envoyée via WhatsApp uniquement.");
       } finally {
         const url = generateWhatsAppURL(formData, cartItems, total);
         window.location.href = url;
@@ -111,7 +113,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
           <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 mb-6">
             <p className="text-sm text-primary-800 flex items-start gap-2">
               <MessageCircle size={18} className="shrink-0 mt-0.5" />
@@ -120,7 +122,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">
               Nom complet
             </label>
             <input
@@ -130,6 +132,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
               onChange={handleChange}
               className={`input-field ${errors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
               placeholder="Ex: Aminata Diallo"
+              required
             />
             {errors.name && (
               <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
@@ -138,42 +141,63 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Ville de livraison
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className={`input-field ${errors.city ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
-              placeholder="Ex: Dakar, Plateau"
-            />
-            {errors.city && (
-              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                <AlertCircle size={12} /> {errors.city}
-              </p>
-            )}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">
+                Ville / Localité
+              </label>
+              <select
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                className={`input-field appearance-none ${errors.city ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                required
+              >
+                <option value="">Sélectionner</option>
+                {SENEGAL_CITIES.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+              {errors.city && (
+                <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle size={12} /> {errors.city}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">
+                Numéro WhatsApp
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`input-field ${errors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                placeholder="77 123 45 67"
+                required
+              />
+              {errors.phone && (
+                <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle size={12} /> {errors.phone}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Téléphone
+            <label className="block text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">
+              Adresse précise (Quartier, Rue, Porte...)
             </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
+            <textarea
+              name="address"
+              value={formData.address}
               onChange={handleChange}
-              className={`input-field ${errors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
-              placeholder="Ex: 77 123 45 67"
+              rows="2"
+              className="input-field py-2"
+              placeholder="Ex: Sacré-Cœur 3, près de la boulangerie..."
             />
-            {errors.phone && (
-              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                <AlertCircle size={12} /> {errors.phone}
-              </p>
-            )}
           </div>
 
           <div className="py-4 border-t border-slate-100 flex items-center justify-between mt-6">

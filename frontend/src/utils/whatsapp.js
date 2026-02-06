@@ -5,13 +5,16 @@ import { formatPrice } from './formatters';
 const WHATSAPP_PHONE = '221776804819'; 
 
 // Format cart items into WhatsApp message
-export const formatWhatsAppMessage = (customerInfo, cartItems, total, validationLink) => {
-  const { name, city, phone } = customerInfo;
+export const formatWhatsAppMessage = (customerInfo, cartItems, total) => {
+  const { name, city, phone, address } = customerInfo;
   
   let message = `🛍️ *Nouvelle Commande - Fama Store*\n\n`;
   message += `👤 *Client:* ${name}\n`;
   message += `📍 *Ville:* ${city}\n`;
-  message += `📞 *Téléphone:* ${phone}\n\n`;
+  if (address) {
+    message += `🏠 *Adresse:* ${address}\n`;
+  }
+  message += `📞 *WhatsApp:* ${phone}\n\n`;
   message += `📦 *Produits:*\n`;
   
   cartItems.forEach((item, index) => {

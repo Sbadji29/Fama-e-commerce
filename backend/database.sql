@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS orders (
   customer_name VARCHAR(100) NOT NULL,
   customer_phone VARCHAR(20) NOT NULL,
   customer_city VARCHAR(100) NOT NULL,
+  customer_address TEXT,
   total_amount DECIMAL(10, 2) NOT NULL,
   status VARCHAR(20) DEFAULT 'pending', -- pending, validated, cancelled
   validation_token VARCHAR(255) UNIQUE,

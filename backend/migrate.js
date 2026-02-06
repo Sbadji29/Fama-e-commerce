@@ -47,6 +47,22 @@ async function migrate() {
       console.log('slug column already exists.');
     }
 
+    // Check Orders for customer_address
+    console.log('Checking orders table for customer_address...');
+    const checkAddressQuery = `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name='orders' AND column_name='customer_address';
+    `;
+    const addressRows = await pool.query(checkAddressQuery);
+    if (addressRows.rows.length === 0) {
+      console.log('Adding customer_address column to orders table...');
+      await pool.query('ALTER TABLE orders ADD COLUMN customer_address TEXT;');
+      console.log('customer_address column added successfully.');
+    } else {
+      console.log('customer_address column already exists.');
+    }
+
     console.log('Migration completed successfully.');
     await pool.end();
   } catch (err) {

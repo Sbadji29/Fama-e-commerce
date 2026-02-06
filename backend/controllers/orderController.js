@@ -13,6 +13,7 @@ const createOrder = async (req, res) => {
       customer_name,
       customer_phone,
       customer_city,
+      customer_address,
       items, // [{ product_color_id, quantity, price, size, name }]
       total_amount,
     } = req.body;
@@ -20,14 +21,15 @@ const createOrder = async (req, res) => {
     const validationToken = crypto.randomBytes(20).toString('hex');
 
     const insertOrderText = `
-      INSERT INTO orders (customer_name, customer_phone, customer_city, total_amount, validation_token)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO orders (customer_name, customer_phone, customer_city, customer_address, total_amount, validation_token)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id, validation_token
     `;
     const { rows: orderRows } = await client.query(insertOrderText, [
       customer_name,
       customer_phone,
       customer_city,
+      customer_address,
       total_amount,
       validationToken, // Token for the link
     ]);

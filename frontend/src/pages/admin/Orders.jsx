@@ -59,7 +59,12 @@ const Orders = () => {
                         <div className="text-xs text-primary-600 font-medium">{order.customer_phone}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-slate-600">{order.customer_city}</div>
+                      <div className="text-sm font-semibold text-slate-800">{order.customer_city}</div>
+                      {order.customer_address && (
+                        <div className="text-[10px] text-slate-500 leading-tight mt-1 max-w-[150px]">
+                          {order.customer_address}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-black text-slate-900 whitespace-nowrap">

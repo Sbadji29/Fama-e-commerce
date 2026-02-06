@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const Header = () => {
@@ -9,66 +9,82 @@ const Header = () => {
   const itemCount = getItemCount();
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-all duration-300">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-          <img 
-            src="/logo.jpeg" 
-            alt="MissUniverse Logo" 
-            className="h-12 w-auto object-contain rounded-lg shadow-sm sm:h-14"
-          />
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-10">
-          <Link to="/" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
-            Accueil
-            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
-          </Link>
-          <Link to="/collection" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
-            Collections
-            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
-          </Link>
-          <Link to="/about" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
-            À propos
-            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
-          </Link>
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={toggleCart}
-            className="relative p-2 rounded-full hover:bg-slate-100 transition-colors group"
-            aria-label="Ouvrir le panier"
-          >
-            <ShoppingCart className="w-6 h-6 text-slate-700 group-hover:text-primary-600 transition-colors" />
-            {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg shadow-red-500/30 animate-bounce-subtle">
-                {itemCount}
-              </span>
-            )}
-          </button>
-          
-          <button 
-            className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
+    <div className="w-full">
+      {/* Top Bar */}
+      <div className="bg-slate-900 text-white text-[10px] sm:text-xs py-1.5 text-center font-medium">
+        LIVRAISON GRATUITE PARTOUT AU SÉNÉGAL À PARTIR DE 50.000 FCFA 🇸🇳
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-100 p-4 flex flex-col gap-4 shadow-lg animate-fade-in z-30">
-          <Link to="/" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Accueil</Link>
-          <Link to="/collection" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Collections</Link>
-          <Link to="/about" className="font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>À propos</Link>
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+        <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-4">
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0">
+            <img 
+              src="/logo.jpeg" 
+              alt="MissUniverse Logo" 
+              className="h-10 sm:h-14 w-auto object-contain"
+            />
+          </Link>
+
+          {/* Search Bar - Professional E-commerce Style */}
+          <div className="hidden md:flex flex-grow max-w-xl relative">
+            <input 
+              type="text" 
+              placeholder="Rechercher des produits, catégories..." 
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-md text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+          </div>
+
+          {/* Desktop Navigation & Actions */}
+          <div className="flex items-center gap-6">
+            <nav className="hidden lg:flex items-center gap-6">
+              <Link to="/" className="text-sm font-bold text-slate-700 hover:text-primary-600 uppercase tracking-tight transition-colors">
+                Accueil
+              </Link>
+              <Link to="/collection" className="text-sm font-bold text-slate-700 hover:text-primary-600 uppercase tracking-tight transition-colors">
+                Boutique
+              </Link>
+            </nav>
+
+            <div className="flex items-center gap-2 sm:gap-4">
+              <button className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full">
+                <Search className="w-5 h-5" />
+              </button>
+
+              <button 
+                onClick={toggleCart}
+                className="relative p-2 rounded-full hover:bg-slate-100 transition-colors group"
+                aria-label="Ouvrir le panier"
+              >
+                <ShoppingCart className="w-6 h-6 text-slate-700 group-hover:text-primary-600 transition-colors" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-primary-600 rounded-full">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+              
+              <button 
+                className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X /> : <Menu />}
+              </button>
+            </div>
+          </div>
         </div>
-      )}
-    </header>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 p-4 flex flex-col gap-4 shadow-lg animate-fade-in z-30">
+            <Link to="/" className="font-bold text-slate-700 p-2 hover:bg-slate-50 rounded-lg text-sm uppercase" onClick={() => setIsMobileMenuOpen(false)}>Accueil</Link>
+            <Link to="/collection" className="font-bold text-slate-700 p-2 hover:bg-slate-50 rounded-lg text-sm uppercase" onClick={() => setIsMobileMenuOpen(false)}>Boutique</Link>
+            <Link to="/about" className="font-bold text-slate-700 p-2 hover:bg-slate-50 rounded-lg text-sm uppercase" onClick={() => setIsMobileMenuOpen(false)}>À propos</Link>
+          </div>
+        )}
+      </header>
+    </div>
   );
 };
 

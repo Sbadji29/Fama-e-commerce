@@ -13,7 +13,6 @@
 
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Outfit", system-ui, sans-serif;
-  --font-serif: "Playfair Display", serif;
 
   --animate-fade-in: fadeIn 0.5s ease-in-out;
   --animate-slide-in-right: slideInRight 0.3s ease-out;
@@ -52,26 +51,18 @@
   }
 
   @keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes orbMove {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(30px, -50px); }
-    66% { transform: translate(-20px, 40px); }
+    0% { opacity: 0; }
+    100% { opacity: 1; }
   }
 }
 
 @layer components {
-  .glass-morph-luxury {
-    @apply backdrop-blur-2xl bg-white/40 border border-white/60 shadow-[0_8px_32px_0_rgba(255,0,122,0.1)];
-    @apply hover:bg-white/60 transition-all duration-700;
+  .standard-card {
+    @apply bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300;
   }
 
-  .luxury-border {
-    @apply relative border border-transparent bg-clip-padding;
-    @apply after:absolute after:inset-0 after:-z-10 after:-m-[1px] after:rounded-[inherit] after:bg-gradient-to-br after:from-primary-400 after:via-secondary-300 after:to-primary-600 after:opacity-0 hover:after:opacity-50 after:transition-opacity after:duration-500;
+  .btn-primary-pro {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200;
   }
   .glass-card {
     @apply backdrop-blur-xl bg-white/60 border border-white/40 shadow-xl shadow-purple-500/10;
@@ -127,15 +118,7 @@
 
 @layer base {
   body {
-    background: #fffcfd;
-    @apply text-slate-900 font-sans min-h-screen text-base overflow-x-hidden relative;
-  }
-
-  .mesh-gradient-bg {
-    @apply fixed inset-0 -z-10 overflow-hidden pointer-events-none;
-  }
-
-  .orb {
-    @apply absolute rounded-full blur-[120px] mix-blend-multiply animate-[orbMove_20s_infinite_alternate];
+    background-color: #f4f4f4;
+    @apply text-slate-900 font-sans min-h-screen text-base overflow-x-hidden;
   }
 }

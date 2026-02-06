@@ -3,10 +3,12 @@
 @import "tailwindcss";
 
 @theme {
+  --color-primary-200: #ffb3d9;
   --color-primary-500: #ff007a;
   --color-primary-600: #e1006a;
   --color-primary-700: #c2005b;
   
+  --color-secondary-200: #f1e4bc;
   --color-secondary-500: #d4af37;
   --color-secondary-600: #b8972f;
   --color-secondary-700: #9c8027;

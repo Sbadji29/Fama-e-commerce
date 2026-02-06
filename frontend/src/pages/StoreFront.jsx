@@ -4,7 +4,9 @@ import ProductGrid from '../components/ProductGrid';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductDetailModal from '../components/ProductDetailModal';
 import Cart from '../components/Cart';
-import CheckoutModal from '../components/CheckoutModal'; // Import
+import CheckoutModal from '../components/CheckoutModal';
+import WhatsAppButton from '../components/WhatsAppButton';
+import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
 import { useCategories } from '../context/CategoryContext';
@@ -41,16 +43,20 @@ const StoreFront = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-200/40 blur-[100px] rounded-full animate-spin-slow"></div>
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-200/40 blur-[100px] rounded-full animate-float"></div>
+      
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         <section className="text-center mb-12 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-4">
-            La Vitrine Enchantée
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-4 tracking-tight">
+            La Vitrine <span className="text-gradient">Enchantée</span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Découvrez nos trésors soigneusement sélectionnés pour vous.
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Découvrez nos trésors soigneusement sélectionnés pour sublimer chaque instant de votre vie.
           </p>
         </section>
 
@@ -67,6 +73,8 @@ const StoreFront = () => {
         />
       </main>
 
+      <Footer />
+
       {/* Modals and Overlays */}
       <ProductDetailModal 
         product={selectedProduct}
@@ -81,6 +89,8 @@ const StoreFront = () => {
       />
 
       <Cart onCheckout={handleCheckout} />
+      
+      <WhatsAppButton />
     </div>
   );
 };

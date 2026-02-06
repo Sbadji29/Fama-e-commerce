@@ -17,20 +17,20 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
           alt={product.name}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-4">
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center gap-2 sm:gap-4 lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:bg-black/20 transition-all duration-300">
           <button
             onClick={() => onViewDetails(product)}
-            className="p-2 sm:p-3 bg-white text-slate-900 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+            className="p-2.5 sm:p-3 bg-white text-slate-900 rounded-full hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl border border-slate-100"
             title="Voir détails"
           >
-            <Eye size={18} />
+            <Eye size={18} className="sm:w-5 sm:h-5" />
           </button>
           <button
             onClick={() => onAddToCart(product, product.sizes?.[0], firstAvailableColor)}
-            className="p-2 sm:p-3 bg-primary-500 text-white rounded-full hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary-500/50"
+            className="p-2.5 sm:p-3 bg-primary-500 text-white rounded-full hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl shadow-primary-500/50"
             title="Ajouter au panier"
           >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={18} className="sm:w-5 sm:h-5" />
           </button>
         </div>
         <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-slate-800 shadow-sm animate-float">

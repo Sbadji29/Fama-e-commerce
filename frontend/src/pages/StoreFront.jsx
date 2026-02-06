@@ -7,6 +7,7 @@ import ProductDetailModal from '../components/ProductDetailModal';
 import Cart from '../components/Cart';
 import CheckoutModal from '../components/CheckoutModal';
 import WhatsAppButton from '../components/WhatsAppButton';
+import ScrollingBanner from '../components/ScrollingBanner';
 import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
@@ -77,6 +78,11 @@ const StoreFront = () => {
             Plongez dans un univers de <span className="text-primary-600">chic</span> et de <span className="text-secondary-600">glamour</span>. 
             Des pièces uniques pour des femmes d'exception.
           </p>
+        </section>
+
+        {/* Dynamic Product Banner */}
+        <section className="mb-20 overflow-visible">
+          <ScrollingBanner products={products.slice(0, 10)} />
         </section>
 
         <div className="max-w-4xl mx-auto">

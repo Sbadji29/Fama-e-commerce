@@ -12,11 +12,13 @@ const Header = () => {
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-all duration-300">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-          <h1 className="text-2xl font-display font-bold text-gradient">
-            MissUniverse
-          </h1>
-        </div>
+        <Link to="/" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+          <img 
+            src="/logo.jpeg" 
+            alt="MissUniverse Logo" 
+            className="h-12 w-auto object-contain rounded-lg shadow-sm sm:h-14"
+          />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">

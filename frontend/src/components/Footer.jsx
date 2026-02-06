@@ -8,9 +8,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand Info */}
           <div>
-            <h3 className="text-2xl font-display font-bold text-gradient mb-4">
-              MissUniverse
-            </h3>
+            <img 
+              src="/logo.jpeg" 
+              alt="MissUniverse Logo" 
+              className="h-16 w-auto object-contain rounded-lg shadow-md mb-6"
+            />
             <p className="text-slate-600 mb-6 leading-relaxed">
               Votre destination mode chic et moderne au Sénégal. Des collections uniques pour sublimer votre quotidien.
             </p>

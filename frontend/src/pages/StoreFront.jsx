@@ -45,8 +45,8 @@ const StoreFront = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-200/40 blur-[100px] rounded-full animate-spin-slow"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-200/40 blur-[100px] rounded-full animate-float"></div>
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-100/40 blur-[120px] rounded-full animate-spin-slow"></div>
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-100/40 blur-[120px] rounded-full animate-float"></div>
       
       <Header />
       

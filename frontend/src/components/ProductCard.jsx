@@ -11,49 +11,49 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
 
   return (
     <div className="glass-card rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-500">
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-48 sm:h-64 overflow-hidden">
         <img
           src={displayImage}
           alt={product.name}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-4">
           <button
             onClick={() => onViewDetails(product)}
-            className="p-3 bg-white text-slate-900 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+            className="p-2 sm:p-3 bg-white text-slate-900 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
             title="Voir détails"
           >
-            <Eye size={20} />
+            <Eye size={18} />
           </button>
           <button
             onClick={() => onAddToCart(product, product.sizes?.[0], firstAvailableColor)}
-            className="p-3 bg-primary-500 text-white rounded-full hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary-500/50"
+            className="p-2 sm:p-3 bg-primary-500 text-white rounded-full hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary-500/50"
             title="Ajouter au panier"
           >
-            <ShoppingBag size={20} />
+            <ShoppingBag size={18} />
           </button>
         </div>
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800">
+        <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-slate-800 shadow-sm animate-float">
           {product.category}
         </div>
         {hasVideo && (
-           <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm p-1.5 rounded-full text-white shadow-sm" title="Vidéo disponible">
-              <Play size={12} fill="white" />
+           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-black/60 backdrop-blur-sm p-1 sm:p-1.5 rounded-full text-white shadow-sm" title="Vidéo disponible">
+              <Play size={10} fill="white" />
            </div>
         )}
       </div>
       
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-display font-semibold text-lg text-slate-800 truncate flex-1">
+      <div className="p-3 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2">
+          <h3 className="font-display font-semibold text-sm sm:text-lg text-slate-800 truncate mb-1 sm:mb-0">
             {product.name}
           </h3>
-          <span className="text-lg font-bold text-gradient ml-2">
+          <span className="text-sm sm:text-lg font-bold text-gradient">
             {formatPrice(product.price)}
           </span>
         </div>
         
-        <p className="text-slate-500 text-sm mb-4 line-clamp-1">
+        <p className="text-slate-500 text-[10px] sm:text-sm mb-2 sm:mb-4 line-clamp-1">
           {product.description}
         </p>
 

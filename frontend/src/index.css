@@ -19,30 +19,23 @@
   --animate-scale-in: scaleIn 0.2s ease-out;
   --animate-bounce-subtle: bounceSubtle 0.5s ease-in-out;
 
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
   @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
-  }
-
-  @keyframes slideInRight {
-    0% { transform: translateX(100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-  }
-
-  @keyframes scaleIn {
-    0% { transform: scale(0.95); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  @keyframes bounceSubtle {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
   }
 }
 
 @layer components {
   .glass-card {
     @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl shadow-purple-500/10;
+    @apply hover:border-primary-500/30 transition-colors duration-500;
   }
 
   .btn-primary {

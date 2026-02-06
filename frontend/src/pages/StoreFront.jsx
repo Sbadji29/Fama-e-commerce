@@ -52,8 +52,8 @@ const StoreFront = () => {
       
       <Header />
       
-      <main className="container mx-auto px-4 pt-8 pb-20 relative z-10">
-        <section className="relative mb-8 text-center">
+      <main className="container mx-auto px-4 pt-4 pb-20 relative z-10">
+        <section className="relative mb-4 text-center">
           {/* Decorative floating elements */}
           <div className="absolute top-0 left-10 animate-float opacity-30 pointer-events-none">
             <Sparkle size={48} className="text-primary-400" />
@@ -61,16 +61,10 @@ const StoreFront = () => {
           <div className="absolute -bottom-10 right-20 animate-sparkle opacity-30 pointer-events-none">
             <Stars size={40} className="text-secondary-400" />
           </div>
-          
-          <div className="inline-block mb-6 px-5 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-lg animate-bounce-subtle">
-            <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent font-black tracking-widest text-sm uppercase">
-              ✨ Nouvelle Collection Disponibles ✨
-            </span>
-          </div>
         </section>
 
         {/* The Banner is now the Hero */}
-        <section className="mb-16 -mx-4 sm:mx-0">
+        <section className="mb-8 -mx-4 sm:mx-0">
           <ScrollingBanner products={products.slice(0, 12)} />
         </section>
 

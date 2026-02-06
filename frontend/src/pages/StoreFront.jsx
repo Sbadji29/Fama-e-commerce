@@ -52,37 +52,26 @@ const StoreFront = () => {
       
       <Header />
       
-      <main className="container mx-auto px-4 pt-12 pb-20 relative z-10">
-        <section className="text-center mb-16 relative">
-          {/* Sparkles icons */}
-          <div className="absolute -top-10 left-1/4 animate-sparkle text-secondary-500 hidden md:block">
-            <Sparkle size={32} />
+      <main className="container mx-auto px-4 pt-8 pb-20 relative z-10">
+        <section className="relative mb-8 text-center">
+          {/* Decorative floating elements */}
+          <div className="absolute top-0 left-10 animate-float opacity-30 pointer-events-none">
+            <Sparkle size={48} className="text-primary-400" />
           </div>
-          <div className="absolute top-0 right-1/4 animate-sparkle delay-700 text-primary-400 hidden md:block">
-            <Sparkle size={24} />
-          </div>
-          
-          <div className="inline-block mb-3 px-4 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary-600 text-xs font-bold uppercase tracking-widest animate-bounce-subtle">
-            Nouvelle Collection 2026
+          <div className="absolute -bottom-10 right-20 animate-sparkle opacity-30 pointer-events-none">
+            <Stars size={40} className="text-secondary-400" />
           </div>
           
-          <h2 className="text-hero mb-6">
-            La Vitrine <br className="md:hidden" />
-            <span className="text-gradient relative">
-              Enchantée
-              <Stars className="absolute -top-6 -right-10 text-secondary-400 animate-pulse-soft hidden md:block" />
+          <div className="inline-block mb-6 px-5 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-lg animate-bounce-subtle">
+            <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent font-black tracking-widest text-sm uppercase">
+              ✨ Nouvelle Collection Disponibles ✨
             </span>
-          </h2>
-          
-          <p className="text-lg md:text-xl text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
-            Plongez dans un univers de <span className="text-primary-600">chic</span> et de <span className="text-secondary-600">glamour</span>. 
-            Des pièces uniques pour des femmes d'exception.
-          </p>
+          </div>
         </section>
 
-        {/* Dynamic Product Banner */}
-        <section className="mb-20 overflow-visible">
-          <ScrollingBanner products={products.slice(0, 10)} />
+        {/* The Banner is now the Hero */}
+        <section className="mb-16 -mx-4 sm:mx-0">
+          <ScrollingBanner products={products.slice(0, 12)} />
         </section>
 
         <div className="max-w-4xl mx-auto">

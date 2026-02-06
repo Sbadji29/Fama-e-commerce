@@ -46,13 +46,13 @@ const StoreFront = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-50">
       <Header />
       
       <main className="container mx-auto px-4 pt-4 pb-24">
         {/* Trending Section */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-8 border-b border-slate-200 pb-4">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-200 pb-4">
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Tendance du moment</h2>
             <Link to="/collection" className="text-primary-600 font-bold text-sm hover:underline">Voir plus ›</Link>
           </div>

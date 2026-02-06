@@ -36,7 +36,7 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
           </button>
         </div>
 
-        <div className="absolute top-3 right-3 bg-white/95 px-2 py-0.5 rounded-full shadow-sm text-[9px] font-black text-primary-600 uppercase tracking-wider z-10">
+        <div className="absolute top-3 right-3 bg-white/95 px-2 py-0.5 rounded-full shadow-sm text-[9px] font-black text-primary-600 uppercase tracking-wider z-10 animate-badge-pop">
           {product.category}
         </div>
         {hasVideo && (

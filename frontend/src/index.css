@@ -108,7 +108,15 @@
   .badge {
     @apply inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5;
     @apply text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-500;
-    @apply rounded-full shadow-lg shadow-pink-500/50 animate-bounce-subtle;
+    @apply rounded-full shadow-lg shadow-pink-500/50 animate-badge-pop;
+  }
+
+  @keyframes badgePop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1) translateY(-2px); }
+  }
+  .animate-badge-pop {
+    animation: badgePop 3s ease-in-out infinite;
   }
 
   .text-gradient {
@@ -133,7 +141,6 @@
 
 @layer base {
   body {
-    background-color: #f4f4f4;
-    @apply text-slate-900 font-sans min-h-screen text-base overflow-x-hidden;
+    @apply bg-slate-50 text-slate-900 font-sans min-h-screen text-base overflow-x-hidden;
   }
 }

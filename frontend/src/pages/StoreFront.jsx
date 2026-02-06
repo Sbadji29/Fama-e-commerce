@@ -49,53 +49,7 @@ const StoreFront = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Professional Hero Section */}
-      <section className="bg-slate-50 border-b border-slate-100">
-        <div className="container mx-auto px-4 py-8 sm:py-12">
-          <div className="flex flex-col md:flex-row gap-8 items-center bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
-            <div className="flex-1 p-8 sm:p-12 text-center md:text-left">
-              <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-xs font-bold rounded-full mb-4 uppercase tracking-wider">
-                Nouvelle Arrivée
-              </span>
-              <h1 className="text-4xl sm:text-6xl font-black text-slate-900 leading-tight mb-6">
-                ÉLÉGANCE <br /> <span className="text-primary-600">SANS COMPROMIS</span>
-              </h1>
-              <p className="text-slate-600 text-lg mb-8 max-w-md">
-                Découvrez notre nouvelle collection exclusive. Des pièces uniques sélectionnées pour vous sublimer.
-              </p>
-              <button className="bg-slate-900 text-white px-8 py-3.5 rounded font-bold hover:bg-slate-800 transition-all uppercase tracking-widest text-sm">
-                Acheter Maintenant
-              </button>
-            </div>
-            <div className="flex-1 h-64 sm:h-auto w-full">
-              <img 
-                src={products[0]?.image || "/logo.jpeg"} 
-                alt="Featured Product" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Service Ribbon (Trust Signals) */}
-      <section className="bg-white border-b border-slate-100">
-        <div className="container mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: "Paiement à la livraison", icon: "🚚" },
-            { label: "Qualité Garantie", icon: "⭐" },
-            { label: "Service Client 24/7", icon: "📞" },
-            { label: "Retour Facile", icon: "🔄" }
-          ].map((item, i) => (
-            <div key={i} className="flex items-center justify-center gap-3 text-sm font-medium text-slate-700">
-              <span className="text-xl">{item.icon}</span>
-              {item.label}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <main className="container mx-auto px-4 pt-10 pb-24">
+      <main className="container mx-auto px-4 pt-4 pb-24">
         {/* Trending Section */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8 border-b border-slate-200 pb-4">

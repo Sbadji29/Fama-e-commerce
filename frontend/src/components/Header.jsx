@@ -10,8 +10,8 @@ const Header = () => {
 
   return (
     <div className="w-full">
-      {/* Top Bar */}
-      <div className="bg-slate-900 text-white text-[10px] sm:text-xs py-1.5 text-center font-medium">
+      {/* Top Bar - Vibrant Brand Colors */}
+      <div className="bg-gradient-to-r from-primary-600 via-secondary-500 to-primary-600 text-white text-[10px] sm:text-xs py-2 text-center font-bold tracking-widest shadow-inner">
         LIVRAISON GRATUITE PARTOUT AU SÉNÉGAL À PARTIR DE 50.000 FCFA 🇸🇳
       </div>
 

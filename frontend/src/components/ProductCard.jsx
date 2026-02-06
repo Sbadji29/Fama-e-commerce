@@ -17,6 +17,25 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
           alt={product.name}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
+        
+        {/* Restored Floating Actions */}
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <button
+            onClick={() => onViewDetails(product)}
+            className="action-icon-luxury"
+            title="Voir détails"
+          >
+            <Eye size={20} />
+          </button>
+          <button
+            onClick={() => onAddToCart(product, product.sizes?.[0], firstAvailableColor)}
+            className="action-icon-luxury bg-primary-500 text-white border-primary-400"
+            title="Ajouter au panier"
+          >
+            <ShoppingBag size={20} />
+          </button>
+        </div>
+
         <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-[10px] font-bold text-slate-800 uppercase">
           {product.category}
         </div>

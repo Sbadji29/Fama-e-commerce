@@ -22,17 +22,12 @@ export const formatWhatsAppMessage = (customerInfo, cartItems, total, validation
   
   message += `\n💰 *TOTAL: ${formatPrice(total)}*`;
 
-  if (validationLink) {
-    message += `\n\n🔗 *Lien de validation (Admin):*\n${validationLink}`;
-    message += `\n⚠️ *Cliquez pour valider la commande et déduire le stock.*`;
-  }
-
   return message;
 };
 
 // Generate WhatsApp URL
-export const generateWhatsAppURL = (customerInfo, cartItems, total, validationLink) => {
-  const message = formatWhatsAppMessage(customerInfo, cartItems, total, validationLink);
+export const generateWhatsAppURL = (customerInfo, cartItems, total) => {
+  const message = formatWhatsAppMessage(customerInfo, cartItems, total);
   const encodedMessage = encodeURIComponent(message);
   return `https://wa.me/${WHATSAPP_PHONE}?text=${encodedMessage}`;
 };

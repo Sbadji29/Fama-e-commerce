@@ -12,7 +12,7 @@ const Dashboard = () => {
   const totalProducts = products.length;
   
   const totalRevenueValue = orders
-    .filter(o => o.status !== 'cancelled')
+    .filter(o => o.status === 'validated')
     .reduce((acc, order) => acc + parseFloat(order.total_amount || 0), 0);
 
   const totalRevenue = new Intl.NumberFormat('fr-FR', {

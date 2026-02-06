@@ -10,12 +10,12 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
   const hasVideo = colors.some(c => c.video);
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-500">
-      <div className="relative h-48 sm:h-64 overflow-hidden">
+    <div className="glass-morph-luxury luxury-border rounded-2xl overflow-hidden group transition-all duration-700 hover:-translate-y-2">
+      <div className="relative h-56 sm:h-72 overflow-hidden">
         <img
           src={displayImage}
           alt={product.name}
-          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-1000 ease-out"
         />
         <div className="absolute inset-0 bg-black/5 flex items-center justify-center gap-2 sm:gap-4 lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:bg-black/20 transition-all duration-300">
           <button
@@ -44,11 +44,11 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
       </div>
       
       <div className="p-3 sm:p-5">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2">
-          <h3 className="font-display font-semibold text-sm sm:text-lg text-slate-800 truncate mb-1 sm:mb-0">
+        <div className="flex flex-col mb-2">
+          <h3 className="font-serif italic text-lg sm:text-xl text-slate-900 mb-1">
             {product.name}
           </h3>
-          <span className="text-sm sm:text-lg font-bold text-gradient">
+          <span className="text-base sm:text-lg font-bold text-primary-600 tracking-tight">
             {formatPrice(product.price)}
           </span>
         </div>

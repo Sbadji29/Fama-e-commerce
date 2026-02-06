@@ -21,18 +21,18 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link to="/" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+        <nav className="hidden md:flex items-center gap-10">
+          <Link to="/" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
             Accueil
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
           </Link>
-          <Link to="/collection" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+          <Link to="/collection" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
             Collections
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
           </Link>
-          <Link to="/about" className="font-medium text-slate-600 hover:text-primary-600 transition-colors relative group">
+          <Link to="/about" className="font-serif italic text-lg text-slate-700 hover:text-primary-600 transition-all duration-300 relative group tracking-tight">
             À propos
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary-500 transition-all duration-500 group-hover:w-full"></span>
           </Link>
         </nav>
 

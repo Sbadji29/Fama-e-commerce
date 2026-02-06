@@ -5,26 +5,25 @@ const ScrollingBanner = ({ products }) => {
   const displayProducts = [...products, ...products, ...products];
 
   return (
-    <div className="relative overflow-hidden py-10 rotate-1">
-      <div className="absolute inset-0 bg-primary-500/5 -skew-y-1"></div>
-      
-      <div className="flex animate-marquee hover:pause whitespace-nowrap gap-6 sm:gap-10">
+    <div className="relative overflow-hidden py-16">
+      <div className="flex animate-marquee hover:pause whitespace-nowrap gap-8 sm:gap-12">
         {displayProducts.map((product, index) => (
           <div 
             key={`${product.id}-${index}`}
             className="inline-flex flex-col items-center group cursor-pointer"
           >
-            <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-2xl overflow-hidden border-4 border-white shadow-xl transform transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3">
+            <div className="relative w-40 h-40 sm:w-60 sm:h-60 rounded-sm overflow-hidden shadow-2xl transition-all duration-1000 ease-out group-hover:shadow-primary-500/20">
               <img 
                 src={product.image || (product.colors?.[0]?.images?.[0])} 
                 alt={product.name} 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
+              <div className="absolute inset-0 border border-white/20 group-hover:border-primary-400 transition-colors duration-700"></div>
             </div>
-            <div className="mt-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="text-xs font-bold text-slate-800 uppercase tracking-widest">
+            <div className="mt-6 text-center">
+              <h4 className="font-serif italic text-lg sm:text-xl text-slate-800 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
                 {product.name}
-              </span>
+              </h4>
             </div>
           </div>
         ))}

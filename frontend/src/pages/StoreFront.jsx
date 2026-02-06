@@ -45,27 +45,46 @@ const StoreFront = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-100/40 blur-[120px] rounded-full animate-spin-slow"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-100/40 blur-[120px] rounded-full animate-float"></div>
+    <div className="min-h-screen relative">
+      {/* Mesh Gradient Background */}
+      <div className="mesh-gradient-bg">
+        <div className="orb w-[500px] h-[500px] bg-primary-100/40 -top-24 -left-24"></div>
+        <div className="orb w-[600px] h-[600px] bg-secondary-100/30 bottom-0 -right-24 delay-1000"></div>
+        <div className="orb w-[400px] h-[400px] bg-primary-200/20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 delay-500"></div>
+      </div>
       
       <Header />
       
-      <main className="container mx-auto px-4 pt-4 pb-20 relative z-10">
-        <section className="relative mb-4 text-center">
-          {/* Decorative floating elements */}
-          <div className="absolute top-0 left-10 animate-float opacity-30 pointer-events-none">
-            <Sparkle size={48} className="text-primary-400" />
+      <main className="container mx-auto px-4 pt-12 pb-24 relative z-10">
+        <section className="relative mb-16 text-center">
+          {/* Editorial Logo Badge */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary-500/20 blur-3xl group-hover:blur-[60px] transition-all duration-1000"></div>
+              <img 
+                src="/logo.jpeg" 
+                alt="Brand Logo" 
+                className="relative h-24 sm:h-32 w-auto object-contain rounded-full shadow-2xl border-4 border-white/80 animate-float"
+              />
+            </div>
+            <h1 className="mt-8 font-serif italic text-4xl md:text-6xl text-slate-900 tracking-tighter">
+              L'Élégance <span className="text-primary-600">Redéfinie</span>
+            </h1>
           </div>
-          <div className="absolute -bottom-10 right-20 animate-sparkle opacity-30 pointer-events-none">
-            <Stars size={40} className="text-secondary-400" />
+          
+          {/* Asymmetrical Floating Elements */}
+          <div className="absolute top-0 left-0 animate-bounce-subtle opacity-40">
+            <Sparkle size={32} className="text-secondary-400" />
+          </div>
+          <div className="absolute bottom-0 right-10 animate-sparkle opacity-40">
+            <Stars size={44} className="text-primary-300" />
           </div>
         </section>
 
-        {/* The Banner is now the Hero */}
-        <section className="mb-8 -mx-4 sm:mx-0">
-          <ScrollingBanner products={products.slice(0, 12)} />
+        {/* The Banner is now the centerpiece */}
+        <section className="mb-24 -mx-4 sm:mx-0 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white z-10 pointer-events-none opacity-40"></div>
+          <ScrollingBanner products={products.slice(0, 15)} />
         </section>
 
         <div className="max-w-4xl mx-auto">

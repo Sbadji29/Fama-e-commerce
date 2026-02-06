@@ -82,12 +82,6 @@
     @apply animate-pulse-soft;
   }
 
-  .bg-animated {
-    background: linear-gradient(-45deg, #fff1f2, #fffbeb, #fff5f8, #fefce8);
-    background-size: 400% 400%;
-    animation: gradientMove 15s ease infinite;
-  }
-
   @keyframes gradientMove {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -97,6 +91,9 @@
 
 @layer base {
   body {
-    @apply bg-animated text-slate-900 font-sans min-h-screen text-base overflow-x-hidden;
+    background: linear-gradient(-45deg, #fff1f2, #fffbeb, #fff5f8, #fefce8);
+    background-size: 400% 400%;
+    animation: gradientMove 15s ease infinite;
+    @apply text-slate-900 font-sans min-h-screen text-base overflow-x-hidden;
   }
 }

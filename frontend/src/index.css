@@ -19,13 +19,19 @@
   --animate-scale-in: scaleIn 0.2s ease-out;
   --animate-bounce-subtle: bounceSubtle 0.5s ease-in-out;
 
-  --animate-float: float 3s ease-in-out infinite;
-  --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
-  --animate-spin-slow: spinSlow 12s linear infinite;
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-pulse-soft: pulseSoft 3s ease-in-out infinite;
+  --animate-spin-slow: spinSlow 15s linear infinite;
+  --animate-sparkle: sparkle 2s ease-in-out infinite;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
   }
 
   @keyframes pulseSoft {
@@ -79,7 +85,12 @@
 
   .text-gradient {
     @apply bg-gradient-to-r from-primary-600 via-pink-400 to-secondary-500 bg-clip-text text-transparent;
-    @apply animate-pulse-soft;
+    @apply drop-shadow-sm;
+  }
+
+  .text-hero {
+    @apply text-5xl md:text-7xl font-display font-extrabold tracking-tighter leading-none;
+    @apply bg-gradient-to-br from-slate-900 via-primary-700 to-secondary-700 bg-clip-text text-transparent;
   }
 
   @keyframes gradientMove {

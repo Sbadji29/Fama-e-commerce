@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Sparkle, Stars } from 'lucide-react';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
 import CategoryFilter from '../components/CategoryFilter';
@@ -50,21 +51,41 @@ const StoreFront = () => {
       
       <Header />
       
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        <section className="text-center mb-12 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-4 tracking-tight">
-            La Vitrine <span className="text-gradient">Enchantée</span>
+      <main className="container mx-auto px-4 pt-12 pb-20 relative z-10">
+        <section className="text-center mb-16 relative">
+          {/* Sparkles icons */}
+          <div className="absolute -top-10 left-1/4 animate-sparkle text-secondary-500 hidden md:block">
+            <Sparkle size={32} />
+          </div>
+          <div className="absolute top-0 right-1/4 animate-sparkle delay-700 text-primary-400 hidden md:block">
+            <Sparkle size={24} />
+          </div>
+          
+          <div className="inline-block mb-3 px-4 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary-600 text-xs font-bold uppercase tracking-widest animate-bounce-subtle">
+            Nouvelle Collection 2026
+          </div>
+          
+          <h2 className="text-hero mb-6">
+            La Vitrine <br className="md:hidden" />
+            <span className="text-gradient relative">
+              Enchantée
+              <Stars className="absolute -top-6 -right-10 text-secondary-400 animate-pulse-soft hidden md:block" />
+            </span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Découvrez nos trésors soigneusement sélectionnés pour sublimer chaque instant de votre vie.
+          
+          <p className="text-lg md:text-xl text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
+            Plongez dans un univers de <span className="text-primary-600">chic</span> et de <span className="text-secondary-600">glamour</span>. 
+            Des pièces uniques pour des femmes d'exception.
           </p>
         </section>
 
-        <CategoryFilter 
-          categories={categories}
-          activeCategory={activeCategory}
-          onSelectCategory={setActiveCategory}
-        />
+        <div className="max-w-4xl mx-auto">
+          <CategoryFilter 
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+          />
+        </div>
 
         <ProductGrid 
           products={filteredProducts}

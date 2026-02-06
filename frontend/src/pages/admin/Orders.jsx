@@ -4,12 +4,24 @@ import { ShoppingBag } from 'lucide-react';
 
 const Orders = () => {
   const { orders, loading, updateOrderStatus } = useOrders();
+  const [updatingId, setUpdatingId] = React.useState(null);
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[400px]">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
     </div>
   );
+
+  const handleStatusUpdate = async (id, status) => {
+    setUpdatingId(id);
+    try {
+      await updateOrderStatus(id, status);
+    } catch (err) {
+      alert("Erreur lors de la mise à jour");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -68,34 +80,44 @@ const Orders = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-black text-slate-900 whitespace-nowrap">
-                        {order.total_amount?.toLocaleString()} CFA
+                        {parseFloat(order.total_amount || 0).toLocaleString()} CFA
                       </div>
                     </td>
                     <td className="px-6 py-4 text-center">
-                       <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${
-                          order.status === 'validated' 
-                            ? 'bg-green-100 text-green-700' 
-                            : order.status === 'cancelled' 
-                              ? 'bg-red-100 text-red-700' 
-                              : 'bg-amber-100 text-amber-700'
-                       }`}>
-                          {order.status === 'validated' ? 'Payé / Validé' : order.status === 'cancelled' ? 'Annulé' : 'En Attente'}
-                       </span>
+                       {updatingId === order.id ? (
+                          <div className="flex justify-center">
+                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-600"></div>
+                          </div>
+                       ) : (
+                          <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${
+                              order.status === 'validated' 
+                                ? 'bg-green-100 text-green-700' 
+                                : order.status === 'cancelled' 
+                                  ? 'bg-red-100 text-red-700' 
+                                  : 'bg-amber-100 text-amber-700'
+                          }`}>
+                              {order.status === 'validated' ? 'Payé / Validé' : order.status === 'cancelled' ? 'Annulé' : 'En Attente'}
+                          </span>
+                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                        <select
-                            value={order.status || 'pending'}
-                            onChange={(e) => {
-                                if (window.confirm(`Changer le statut en "${e.target.value}" ?`)) {
-                                    updateOrderStatus(order.id, e.target.value);
-                                }
-                            }}
-                            className="text-xs font-bold bg-slate-100 border-none rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-primary-500 cursor-pointer hover:bg-slate-200 transition-colors"
-                        >
-                            <option value="pending text-amber-600">En attente</option>
-                            <option value="validated text-green-600">Valider</option>
-                            <option value="cancelled text-red-600">Annuler</option>
-                        </select>
+                        {updatingId === order.id ? (
+                           <span className="text-[10px] text-slate-400 italic">Mise à jour...</span>
+                        ) : (
+                          <select
+                              value={order.status || 'pending'}
+                              onChange={(e) => {
+                                  if (window.confirm(`Changer le statut en "${e.target.value}" ?`)) {
+                                      handleStatusUpdate(order.id, e.target.value);
+                                  }
+                              }}
+                              className="text-xs font-bold bg-slate-100 border-none rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-primary-500 cursor-pointer hover:bg-slate-200 transition-colors"
+                          >
+                              <option value="pending">En attente</option>
+                              <option value="validated">Valider</option>
+                              <option value="cancelled">Annuler</option>
+                          </select>
+                        )}
                     </td>
                     </tr>
                 ))

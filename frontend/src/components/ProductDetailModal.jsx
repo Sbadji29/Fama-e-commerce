@@ -3,17 +3,20 @@ import { X, ShoppingBag, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { formatPrice } from '../utils/formatters';
 
 const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
-  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(-1);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [viewingVideo, setViewingVideo] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   // Reset indices when product changes
   useEffect(() => {
     if (product) {
-      const firstAvailable = product.colors?.findIndex(c => c.available);
-      setSelectedColorIndex(firstAvailable !== -1 ? firstAvailable : 0);
+      setSelectedColorIndex(-1);
+      setSelectedSize(null);
       setCurrentImageIndex(0);
       setViewingVideo(false);
+      setShowError(false);
     }
   }, [product, isOpen]);
 
@@ -25,10 +28,23 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
   if (!isOpen || !product) return null;
 
   const colors = product.colors || [];
-  const selectedColor = colors[selectedColorIndex];
+  const selectedColor = selectedColorIndex !== -1 ? colors[selectedColorIndex] : null;
   const images = selectedColor?.images || [product.image];
   const video = selectedColor?.video;
   
+  const handleAddToCart = () => {
+    const hasColors = colors.length > 0;
+    const hasSizes = product.sizes && product.sizes.length > 0;
+
+    if ((hasColors && selectedColorIndex === -1) || (hasSizes && !selectedSize)) {
+      setShowError(true);
+      return;
+    }
+
+    onAddToCart(product, selectedSize, selectedColor);
+    onClose();
+  };
+
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
@@ -137,15 +153,16 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
             <p className="text-2xl font-bold text-gradient mb-6">
               {formatPrice(product.price)}
             </p>
-            <p className="text-slate-600 leading-relaxed mb-8 text-lg">
+            <p className="text-slate-600 leading-relaxed mb-8 text-sm">
               {product.description}
             </p>
 
             {/* Colors Selection */}
             {colors.length > 0 && (
               <div className="mb-8">
-                <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                  Couleur: <span className="font-normal text-slate-500">{colors[selectedColorIndex].name}</span>
+                <h3 className="font-semibold text-slate-800 mb-4 flex items-center justify-between">
+                  <span>Choisir la Couleur :</span>
+                  {selectedColor && <span className="text-primary-600 font-bold">{selectedColor.name}</span>}
                 </h3>
                 <div className="flex flex-wrap gap-4">
                   {colors.map((color, idx) => (
@@ -155,23 +172,24 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
                         if (color.available) {
                           setSelectedColorIndex(idx);
                           setCurrentImageIndex(0);
+                          setShowError(false);
                         }
                       }}
-                      className={`relative w-10 h-10 rounded-full border-2 transition-all p-0.5 ${
+                      className={`relative w-11 h-11 rounded-full border-2 transition-all p-0.5 ${
                         selectedColorIndex === idx 
-                          ? 'border-primary-500 scale-110' 
-                          : 'border-transparent hover:scale-105'
-                      } ${!color.available ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+                          ? 'border-primary-600 scale-110 shadow-lg' 
+                          : 'border-slate-200 hover:border-primary-300'
+                      } ${!color.available ? 'cursor-not-allowed opacity-30 grayscale' : 'cursor-pointer'}`}
                       title={`${color.name}${!color.available ? ' (Indisponible)' : ''}`}
                     >
                       <div 
                         className="w-full h-full rounded-full" 
                         style={{ backgroundColor: color.hex }}
                       />
-                      {!color.available && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-full h-[2px] bg-slate-400 rotate-45" />
-                        </div>
+                      {selectedColorIndex === idx && (
+                         <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-600 rounded-full border-2 border-white flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                         </div>
                       )}
                     </button>
                   ))}
@@ -181,12 +199,20 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
 
             {product.sizes && product.sizes.length > 0 && (
               <div className="mb-8">
-                <h3 className="font-semibold text-slate-800 mb-4">Tailles disponibles</h3>
+                <h3 className="font-semibold text-slate-800 mb-4">Choisir la Taille :</h3>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map(size => (
                     <button 
                       key={size}
-                      className="w-12 h-12 flex items-center justify-center rounded-xl border-2 border-slate-100 text-slate-600 font-medium hover:border-primary-500 hover:text-primary-500 transition-all active:scale-95"
+                      onClick={() => {
+                        setSelectedSize(size);
+                        setShowError(false);
+                      }}
+                      className={`w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold ${
+                        selectedSize === size
+                          ? 'border-primary-600 bg-primary-50 text-primary-600 shadow-md scale-105'
+                          : 'border-slate-100 text-slate-600 hover:border-primary-300 hover:text-primary-500'
+                      }`}
                     >
                       {size}
                     </button>
@@ -194,14 +220,18 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
                 </div>
               </div>
             )}
+
+            {showError && (
+              <div className="mb-6 animate-shake p-3 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm font-bold">
+                <AlertCircle size={18} />
+                Veuillez sélectionner une couleur et une taille
+              </div>
+            )}
           </div>
 
           <div className="mt-8">
             <button
-              onClick={() => {
-                onAddToCart(product, product.sizes?.[0], colors[selectedColorIndex]);
-                onClose();
-              }}
+              onClick={handleAddToCart}
               className="btn-primary w-full flex items-center justify-center gap-3 py-4 text-lg"
             >
               <ShoppingBag size={22} />

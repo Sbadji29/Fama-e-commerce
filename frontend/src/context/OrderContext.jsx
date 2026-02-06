@@ -42,7 +42,10 @@ export const OrderProvider = ({ children }) => {
   const fetchOrders = async () => {
     try {
         const token = localStorage.getItem('fama-token');
-        if (!token) return; // Wait for auth or maybe just return empty if not public
+        if (!token) {
+          setLoading(false);
+          return;
+        }
         
         const response = await fetch(`${API_URL}/orders`, {
             headers: {

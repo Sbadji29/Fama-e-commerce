@@ -21,15 +21,30 @@ const StoreFront = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false); // New state
   
   const { addToCart, toggleCart } = useCart();
-  const { products } = useProducts();
+  const { products, searchQuery } = useProducts();
   const { categories: contextCategories } = useCategories();
 
   const categories = ['Tous', ...contextCategories];
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'Tous') return products;
-    return products.filter(p => p.category === activeCategory);
-  }, [activeCategory]);
+    let filtered = products;
+    
+    // Filter by Category
+    if (activeCategory !== 'Tous') {
+      filtered = filtered.filter(p => p.category === activeCategory);
+    }
+    
+    // Filter by Search Query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) || 
+        p.category.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [activeCategory, products, searchQuery]);
 
   const handleOpenDetails = (product) => {
     setSelectedProduct(product);

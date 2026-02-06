@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useProducts } from '../context/ProductContext';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { getItemCount, toggleCart } = useCart();
+  const { searchQuery, setSearchQuery } = useProducts();
   const itemCount = getItemCount();
 
   return (
@@ -31,6 +33,8 @@ const Header = () => {
             <input 
               type="text" 
               placeholder="Rechercher des produits, catégories..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-md text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />

@@ -16,6 +16,7 @@ export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchProducts = async () => {
     try {
@@ -94,7 +95,17 @@ export const ProductProvider = ({ children }) => {
   };
 
   return (
-    <ProductContext.Provider value={{ products, loading, error, addProduct, updateProduct, deleteProduct, refreshProducts: fetchProducts }}>
+    <ProductContext.Provider value={{ 
+      products, 
+      loading, 
+      error, 
+      searchQuery,
+      setSearchQuery,
+      addProduct, 
+      updateProduct, 
+      deleteProduct, 
+      refreshProducts: fetchProducts 
+    }}>
       {children}
     </ProductContext.Provider>
   );

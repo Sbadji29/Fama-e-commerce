@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkle, Stars } from 'lucide-react';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';

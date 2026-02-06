@@ -75,7 +75,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         console.error("Backend error, falling back to offline mode:", err);
       } finally {
         const url = generateWhatsAppURL(formData, cartItems, total);
-        window.location.href = url;
+        window.open(url, '_blank');
         clearCart();
         onClose();
         setIsSubmitting(false);

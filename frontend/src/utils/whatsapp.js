@@ -19,6 +19,7 @@ export const formatWhatsAppMessage = (customerInfo, cartItems, total) => {
   
   cartItems.forEach((item, index) => {
     message += `${index + 1}. ${item.name}`;
+    if (item.color?.color_name) message += ` (Couleur: ${item.color.color_name})`;
     if (item.size) message += ` (Taille: ${item.size})`;
     message += `\n   Qté: ${item.quantity} x ${formatPrice(item.price)}\n`;
   });

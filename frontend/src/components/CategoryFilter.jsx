@@ -13,10 +13,10 @@ const CategoryFilter = ({ categories, activeCategory, onSelectCategory }) => {
           <button
             key={key}
             onClick={() => onSelectCategory(value)}
-            className={`px-5 py-2 rounded text-sm font-bold uppercase transition-all duration-200 border ${
+            className={`fun-category-pill ${
               isActive
-                ? 'bg-slate-900 border-slate-900 text-white shadow-md'
-                : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
+                ? 'bg-gradient-to-r from-primary-600 to-primary-500 border-transparent text-white shadow-lg shadow-primary-500/40 scale-105'
+                : 'bg-white border-slate-100 text-slate-500 hover:border-primary-200 hover:text-primary-600'
             }`}
           >
             {value}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatPrice } from '../utils/formatters';
 
 const ScrollingBanner = ({ products }) => {
   // Duplicate products to create a seamless loop
